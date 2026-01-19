@@ -17,10 +17,6 @@ const routeSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  price: {
-    type: Number,
-    required: true,
-  },
   availableSeats: {
     type: Number,
     default: 40,
@@ -30,7 +26,7 @@ const routeSchema = new mongoose.Schema({
     default: 40,
   },
   departureTime: {
-    type: String,
+    type: Date,
     required: true,
   },
   isActive: {

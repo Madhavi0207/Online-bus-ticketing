@@ -21,6 +21,7 @@ app.use("/api/routes", require("./routes/routeRoutes"));
 app.use("/api/services", require("./routes/serviceRoutes"));
 app.use("/api/bookings", require("./routes/bookingRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
+app.use("/api/buses", require("./routes/busesRoutes"));
 
 // Default route
 const PORT = process.env.PORT || 3000;

@@ -1,5 +1,6 @@
 const Booking = require("../models/Booking");
 const Route = require("../models/route.model.js");
+const Bus = require("../models/bus.model");
 const sendEmail = require("../utils/email");
 
 // Create booking
@@ -133,10 +134,49 @@ const sendTicket = async (req, res) => {
   }
 };
 
+// Example: Book a seat for a user
+const bookSeat = async (req, res) => {
+  try {
+    const { busId, seatNumber, userId } = req.body;
+
+    // Find the bus
+    const bus = await Bus.findById(busId);
+    if (!bus) return res.status(404).json({ error: "Bus not found" });
+
+    // Find the seat
+    const seat = bus.seats.find((s) => s.seatNumber === seatNumber);
+    if (!seat) return res.status(404).json({ error: "Seat not found" });
+    if (seat.isBooked)
+      return res.status(400).json({ error: "Seat already booked" });
+
+    // Create a booking record (optional, but recommended)
+    const booking = new Booking({
+      user: userId,
+      bus: busId,
+      seatNumber,
+      // Add other fields like price, date
+    });
+    await booking.save();
+
+    // Update the seat
+    seat.isBooked = true;
+    seat.bookedBy = userId;
+    seat.bookingId = booking._id;
+
+    // Save the bus
+    await bus.save();
+
+    res.status(200).json({ message: "Seat booked successfully", booking });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   createBooking,
   getUserBookings,
   getAllBookings,
   cancelBooking,
   sendTicket,
+  bookSeat,
 };

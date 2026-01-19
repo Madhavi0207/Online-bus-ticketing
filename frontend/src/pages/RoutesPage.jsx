@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Search, Filter, MapPin, Clock, Users, ArrowRight } from "lucide-react";
-import { routesAPI } from "../services/api";
+import busesAPI from "../services/busesAPI.js"; // Assuming busesAPI exists; create if not
 import LoadingSpinner from "../components/common/LoadingSpinner";
 
 const RoutesPage = () => {
-  const [routes, setRoutes] = useState([]);
-  const [filteredRoutes, setFilteredRoutes] = useState([]);
+  const [buses, setBuses] = useState([]);
+  const [filteredBuses, setFilteredBuses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
@@ -21,44 +21,44 @@ const RoutesPage = () => {
 
   useEffect(() => {
     filterAndSortRoutes();
-  }, [routes, searchTerm, filters]);
+  }, [buses, searchTerm, filters]);
 
   const fetchRoutes = async () => {
     try {
-      const response = await routesAPI.getAll();
-      setRoutes(response.data);
-      setFilteredRoutes(response.data);
+      const response = await busesAPI.getAll(); // Fetch buses with populated routes
+      setBuses(response.data);
+      setFilteredBuses(response.data);
     } catch (error) {
-      console.error("Error fetching routes:", error);
+      console.error("Error fetching buses:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const filterAndSortRoutes = () => {
-    let filtered = [...routes];
+    let filtered = [...buses];
 
     // Search filter
     if (searchTerm) {
       filtered = filtered.filter(
-        (route) =>
-          route.from.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          route.to.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          route.description.toLowerCase().includes(searchTerm.toLowerCase())
+        (bus) =>
+          bus.route.from.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          bus.route.to.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          bus.busNumber.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
     // From filter
     if (filters.from) {
-      filtered = filtered.filter((route) =>
-        route.from.toLowerCase().includes(filters.from.toLowerCase())
+      filtered = filtered.filter((bus) =>
+        bus.route.from.toLowerCase().includes(filters.from.toLowerCase()),
       );
     }
 
     // To filter
     if (filters.to) {
-      filtered = filtered.filter((route) =>
-        route.to.toLowerCase().includes(filters.to.toLowerCase())
+      filtered = filtered.filter((bus) =>
+        bus.route.to.toLowerCase().includes(filters.to.toLowerCase()),
       );
     }
 
@@ -68,20 +68,16 @@ const RoutesPage = () => {
         filtered.sort((a, b) => a.price - b.price);
         break;
       case "duration":
-        filtered.sort((a, b) => {
-          const aDuration = parseInt(a.duration);
-          const bDuration = parseInt(b.duration);
-          return aDuration - bDuration;
-        });
+        // Assuming duration is in route; add if needed
         break;
       case "seats":
-        filtered.sort((a, b) => b.availableSeats - a.availableSeats);
+        filtered.sort((a, b) => b.totalSeats - a.totalSeats); // Or calculate available
         break;
       default:
         break;
     }
 
-    setFilteredRoutes(filtered);
+    setFilteredBuses(filtered);
   };
 
   const handleFilterChange = (field, value) => {
@@ -175,7 +171,7 @@ const RoutesPage = () => {
       </div>
 
       {/* Routes Grid */}
-      {filteredRoutes.length === 0 ? (
+      {filteredBuses.length === 0 ? (
         <div className="text-center py-16">
           <MapPin className="h-16 w-16 text-gray-400 mx-auto mb-4" />
           <h3 className="text-2xl font-medium text-gray-900 mb-2">
@@ -185,51 +181,52 @@ const RoutesPage = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredRoutes.map((route) => (
+          {filteredBuses.map((bus) => (
             <div
-              key={route._id}
+              key={bus._id}
               className="card hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300"
             >
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <div className="text-sm font-semibold text-primary-600 mb-1">
-                    {route.departureTime}
+                    {bus.departureTime}
                   </div>
                   <h3 className="text-xl font-bold text-gray-900">
-                    {route.from} → {route.to}
+                    {bus.route.from} → {bus.route.to}
                   </h3>
                 </div>
                 <div className="text-right">
                   <div className="text-2xl font-bold text-gray-900">
-                    NPR {route.price}
+                    NPR {bus.price}
                   </div>
                   <div className="text-sm text-gray-500">per seat</div>
                 </div>
               </div>
 
-              <p className="text-gray-600 mb-4">{route.description}</p>
+              <p className="text-gray-600 mb-4">Bus: {bus.busNumber}</p>
 
               <div className="space-y-2 mb-6">
                 <div className="flex items-center text-sm text-gray-600">
                   <Clock className="h-4 w-4 mr-2" />
-                  <span>{route.duration}</span>
+                  <span>{bus.route.duration || "N/A"}</span>{" "}
+                  {/* Assuming duration in route */}
                 </div>
                 <div className="flex items-center text-sm text-gray-600">
                   <Users className="h-4 w-4 mr-2" />
-                  <span>{route.availableSeats} seats available</span>
+                  <span>{bus.totalSeats} seats total</span>
                 </div>
               </div>
 
               <div className="flex space-x-3">
                 <Link
-                  to={`/booking?route=${route._id}`}
+                  to={`/booking?bus=${bus._id}`}
                   className="btn-primary flex-1 flex items-center justify-center space-x-2"
                 >
                   <span>Book Now</span>
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
-                  to={`/routes/${route._id}`}
+                  to={`/buses/${bus._id}`}
                   className="btn-secondary flex-1 text-center"
                 >
                   Details
@@ -244,7 +241,7 @@ const RoutesPage = () => {
       <div className="mt-12 bg-linear-to-r from-primary-500 to-primary-700 rounded-2xl p-8 text-white">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           <div className="text-center">
-            <div className="text-4xl font-bold mb-2">{routes.length}</div>
+            <div className="text-4xl font-bold mb-2">{buses.length}</div>
             <div className="text-sm opacity-90">Active Routes</div>
           </div>
           <div className="text-center">

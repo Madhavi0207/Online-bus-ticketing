@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const SeatSchema = new mongoose.Schema({
+const seatSchema = new mongoose.Schema({
   seatNumber: {
     type: String,
     required: true,
@@ -19,45 +19,27 @@ const SeatSchema = new mongoose.Schema({
   },
 });
 
-const BusSchema = new mongoose.Schema({
+const busSchema = new mongoose.Schema({
+  route: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Route",
+    required: true,
+  },
   busNumber: {
     type: String,
     required: true,
-    unique: true,
   },
-  busName: {
-    type: String,
+  price: {
+    type: Number,
     required: true,
   },
   totalSeats: {
     type: Number,
-    required: true,
+    default: 40,
   },
-  seats: [SeatSchema],
-  route: {
-    from: {
-      type: String,
-      required: true,
-    },
-    to: {
-      type: String,
-      required: true,
-    },
-    departureTime: {
-      type: String,
-      required: true,
-    },
-    arrivalTime: {
-      type: String,
-      required: true,
-    },
-    travelDate: {
-      type: Date,
-      required: true,
-    },
-  },
-  price: {
-    type: Number,
+  seats: [seatSchema], // Added: Array of seat subdocuments
+  departureTime: {
+    type: Date,
     required: true,
   },
   isActive: {
@@ -70,4 +52,4 @@ const BusSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Bus", BusSchema);
+module.exports = mongoose.model("Bus", busSchema);
