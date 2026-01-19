@@ -1,20 +1,21 @@
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Request interceptor to add auth token
+// Request interceptor to add token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
     if (token) {
-      config.headers["x-auth-token"] = token;
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
@@ -29,60 +30,52 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
-      localStorage.removeItem("user");
       window.location.href = "/login";
     }
     return Promise.reject(error);
   }
 );
 
-// Auth API
+// Auth endpoints
 export const authAPI = {
-  register: (userData) => api.post("/auth/register", userData),
   login: (credentials) => api.post("/auth/login", credentials),
-  getProfile: () => api.get("/auth/me"),
-  updateProfile: (data) => api.put("/auth/me", data),
+  register: (userData) => api.post("/auth/register", userData),
+  getProfile: () => api.get("/auth/profile"),
 };
 
-// Services API
-export const servicesAPI = {
-  getAll: () => api.get("/services"),
-  getById: (id) => api.get(`/services/${id}`),
-  create: (serviceData) => api.post("/services", serviceData),
-  update: (id, serviceData) => api.put(`/services/${id}`, serviceData),
-  delete: (id) => api.delete(`/services/${id}`),
-};
-
-// Routes API
+// Routes endpoints
 export const routesAPI = {
   getAll: () => api.get("/routes"),
-  getPopular: () => api.get("/routes/popular"),
   getById: (id) => api.get(`/routes/${id}`),
-  search: (from, to) => api.get(`/routes/search/${from}/${to}`),
-  getSeatAvailability: (id) => api.get(`/routes/${id}/seats`),
   create: (routeData) => api.post("/routes", routeData),
   update: (id, routeData) => api.put(`/routes/${id}`, routeData),
   delete: (id) => api.delete(`/routes/${id}`),
 };
 
-// Bookings API
-export const bookingsAPI = {
-  create: (bookingData) => api.post("/bookings", bookingData),
-  getMyBookings: () => api.get("/bookings/my-bookings"),
-  getById: (id) => api.get(`/bookings/${id}`),
-  cancel: (id, reason) =>
-    api.put(`/bookings/${id}/cancel`, { cancellationReason: reason }),
-  checkAvailability: (routeId, date, time) =>
-    api.get(
-      `/bookings/route/${routeId}/availability?date=${date}&time=${time}`
-    ),
+// Services endpoints
+export const servicesAPI = {
+  getAll: () => api.get("/services"),
+  create: (serviceData) => api.post("/services", serviceData),
+  update: (id, serviceData) => api.put(`/services/${id}`, serviceData),
+  delete: (id) => api.delete(`/services/${id}`),
 };
 
-// Admin API
+// Bookings endpoints
+export const bookingsAPI = {
+  create: (bookingData) => api.post("/bookings", bookingData),
+  getUserBookings: () => api.get("/bookings/my-bookings"),
+  getAllBookings: () => api.get("/bookings/all"),
+  cancel: (id) => api.put(`/bookings/${id}/cancel`),
+  sendTicket: (id) => api.post(`/bookings/${id}/send-ticket`),
+};
+
+// Admin endpoints
 export const adminAPI = {
-  getDashboardStats: () => api.get("/bookings/stats/dashboard"),
-  getAllBookings: (params) => api.get("/bookings", { params }),
-  getAllUsers: () => api.get("/auth/users"),
+  getStats: () => api.get("/admin/stats"),
+  getUsers: () => api.get("/users"),
+  updateUser: (id, userData) => api.put(`/users/${id}`, userData),
+  deleteUser: (id) => api.delete(`/users/${id}`),
+  toggleAdmin: (id) => api.put(`/users/${id}/toggle-admin`),
 };
 
 export default api;

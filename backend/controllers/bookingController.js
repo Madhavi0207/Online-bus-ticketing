@@ -1,5 +1,6 @@
 const Booking = require("../models/Booking");
 const Route = require("../models/Route");
+const sendEmail = require("../utils/email");
 
 // Create booking
 const createBooking = async (req, res) => {
@@ -95,10 +96,47 @@ const cancelBooking = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+// Send ticket via email
+const sendTicket = async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id)
+      .populate("route")
+      .populate("user", "name email");
+
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    // Check if user owns the booking or is admin
+    if (booking.user._id.toString() !== req.user.id && !req.user.isAdmin) {
+      return res.status(403).json({ error: "Not authorized" });
+    }
+
+    const emailContent = `
+      <h1>Ticket for ${booking.route.from} to ${booking.route.to}</h1>
+      <p>Passenger: ${booking.user.name}</p>
+      <p>Travel Date: ${new Date(booking.travelDate).toLocaleDateString()}</p>
+      <p>Seats: ${booking.seats.map((seat) => seat.seatNumber).join(", ")}</p>
+      <p>Total Amount: NPR ${booking.totalAmount}</p>
+      <p>Booking Reference: ${booking._id}</p>
+    `;
+
+    await sendEmail({
+      to: booking.user.email,
+      subject: `Your Ticket for ${booking.route.from} to ${booking.route.to}`,
+      html: emailContent,
+    });
+
+    res.json({ message: "Ticket sent successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 module.exports = {
   createBooking,
   getUserBookings,
   getAllBookings,
   cancelBooking,
+  sendTicket,
 };

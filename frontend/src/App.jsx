@@ -1,127 +1,109 @@
-import React, { useState } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import Home from "./pages/Home";
-import Services from "./pages/Services";
-import RoutesPage from "./pages/Routes";
-import Contact from "./pages/Contact";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Booking from "./pages/Booking";
-import Admin from "./pages/Admin";
-import MyBookings from "./pages/MyBookings";
-import AuthContext from "./context/AuthContext";
-import ProtectedRoute from "./components/ProtectedRoute";
-import { Toaster } from "react-hot-toast";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import BookingPage from "./pages/BookingPage";
+import MyBookingsPage from "./pages/MyBookingsPage";
+import RoutesPage from "./pages/RoutesPage";
+import ServicesPage from "./pages/ServicesPage";
+import Dashboard from "./admin/pages/Dashboard";
+import Analytics from "./admin/pages/Analytics";
+import ManageBooking from "./admin/pages/ManageBooking";
+import ManageRoutes from "./admin/pages/ManageRoutes";
+import ManageService from "./admin/pages/ManageService";
+import ManageUsers from "./admin/pages/ManageUsers";
+import SendTickets from "./admin/pages/SendTickets";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/common/ProtectedRoute";
+import { Toaster } from "react-hot-toast"; // Add this import
 
 function App() {
-  const [user, setUser] = useState(() => {
-    const token = localStorage.getItem("token");
-    const userData = localStorage.getItem("user");
-    return token && userData ? JSON.parse(userData) : null;
-  });
-
-  const [loading] = useState(() => {
-    // Initial loading state is true only during SSR or initial render
-    // On the client, we check immediately
-    if (typeof window !== "undefined") {
-      return false; // We already checked localStorage above
-    }
-    return true; // For SSR or initial render
-  });
-
-  const login = (userData, token) => {
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(userData));
-    setUser(userData);
-  };
-
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setUser(null);
-  };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthProvider>
+      <Toaster position="top-right" /> {/* Add Toaster component */}
       <Router>
-        <div className="flex flex-col min-h-screen">
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 3000,
-              style: {
-                background: "#363636",
-                color: "#fff",
-              },
-              success: {
-                duration: 3000,
-                theme: {
-                  primary: "green",
-                  secondary: "black",
-                },
-              },
-            }}
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route
+            path="/booking"
+            element={
+              <ProtectedRoute>
+                <BookingPage />
+              </ProtectedRoute>
+            }
           />
-          <Navbar />
-          <main className="grow">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/routes" element={<RoutesPage />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route
-                path="/login"
-                element={!user ? <Login /> : <Navigate to="/" />}
-              />
-              <Route
-                path="/register"
-                element={!user ? <Register /> : <Navigate to="/" />}
-              />
-              <Route
-                path="/booking/:routeId"
-                element={
-                  <ProtectedRoute>
-                    <Booking />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/my-bookings"
-                element={
-                  <ProtectedRoute>
-                    <MyBookings />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/admin/*"
-                element={
-                  <ProtectedRoute adminOnly>
-                    <Admin />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
+          <Route
+            path="/my-bookings"
+            element={
+              <ProtectedRoute>
+                <MyBookingsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/routes" element={<RoutesPage />} />
+          <Route path="/services" element={<ServicesPage />} />
+          {/* Admin routes - protect as needed */}
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute adminOnly>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/analytics"
+            element={
+              <ProtectedRoute adminOnly>
+                <Analytics />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/manage-booking"
+            element={
+              <ProtectedRoute adminOnly>
+                <ManageBooking />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/manage-routes"
+            element={
+              <ProtectedRoute adminOnly>
+                <ManageRoutes />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/manage-service"
+            element={
+              <ProtectedRoute adminOnly>
+                <ManageService />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/manage-users"
+            element={
+              <ProtectedRoute adminOnly>
+                <ManageUsers />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/send-tickets"
+            element={
+              <ProtectedRoute adminOnly>
+                <SendTickets />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
       </Router>
-    </AuthContext.Provider>
+    </AuthProvider>
   );
 }
 
