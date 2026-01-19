@@ -2,9 +2,12 @@ const Bus = require("../models/bus.model");
 
 const getAllBuses = async (req, res) => {
   try {
+    const count = await Bus.countDocuments();
+    console.log(`Total buses in DB: ${count}`);
+    const busesWithoutPopulate = await Bus.find();
+    console.log(`Buses without populate: ${busesWithoutPopulate.length}`);
     const buses = await Bus.find().populate("route");
-    console.log(`Found ${buses.length} buses`);
-    console.log(JSON.stringify(buses));
+    console.log(`Found ${buses.length} buses with populate`);
     res.json(buses);
   } catch (error) {
     console.error("Error fetching buses:", error);

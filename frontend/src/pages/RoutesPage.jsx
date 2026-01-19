@@ -42,23 +42,23 @@ const RoutesPage = () => {
     if (searchTerm) {
       filtered = filtered.filter(
         (bus) =>
-          bus.route.from.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          bus.route.to.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          bus.busNumber.toLowerCase().includes(searchTerm.toLowerCase()),
+          bus.route?.from?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          bus.route?.to?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          bus.busNumber?.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
     // From filter
     if (filters.from) {
       filtered = filtered.filter((bus) =>
-        bus.route.from.toLowerCase().includes(filters.from.toLowerCase()),
+        bus.route?.from?.toLowerCase().includes(filters.from.toLowerCase()),
       );
     }
 
     // To filter
     if (filters.to) {
       filtered = filtered.filter((bus) =>
-        bus.route.to.toLowerCase().includes(filters.to.toLowerCase()),
+        bus.route?.to?.toLowerCase().includes(filters.to.toLowerCase()),
       );
     }
 
@@ -180,19 +180,20 @@ const RoutesPage = () => {
           <p className="text-gray-600">Try adjusting your search criteria</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 p-4 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredBuses.map((bus) => (
             <div
               key={bus._id}
               className="card hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300"
             >
-              <div className="flex justify-between items-start mb-4">
+              <div className="flex justify-between items-start m-4">
                 <div>
                   <div className="text-sm font-semibold text-primary-600 mb-1">
                     {bus.departureTime}
                   </div>
                   <h3 className="text-xl font-bold text-gray-900">
-                    {bus.route.from} → {bus.route.to}
+                    {bus.route?.from || "Unknown"} →{" "}
+                    {bus.route?.to || "Unknown"}
                   </h3>
                 </div>
                 <div className="text-right">
@@ -208,7 +209,7 @@ const RoutesPage = () => {
               <div className="space-y-2 mb-6">
                 <div className="flex items-center text-sm text-gray-600">
                   <Clock className="h-4 w-4 mr-2" />
-                  <span>{bus.route.duration || "N/A"}</span>{" "}
+                  <span>{bus.route?.duration || "N/A"}</span>{" "}
                   {/* Assuming duration in route */}
                 </div>
                 <div className="flex items-center text-sm text-gray-600">
@@ -226,7 +227,7 @@ const RoutesPage = () => {
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
-                  to={`/buses/${bus._id}`}
+                  to={`/routes/${bus._id}`}
                   className="btn-secondary flex-1 text-center"
                 >
                   Details
