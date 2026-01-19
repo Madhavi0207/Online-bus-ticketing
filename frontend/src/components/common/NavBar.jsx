@@ -48,7 +48,7 @@ const Navbar = () => {
               </Link>
             ))}
             <div className="pt-6">
-              {true ? (
+              {isAuthenticated ? (
                 <Link
                   to="/logout"
                   onClick={() => setIsOpen(false)}
@@ -58,13 +58,13 @@ const Navbar = () => {
                 </Link>
               ) : (
                 <>
-                  {/* <Link
+                  <Link
                     to="/login"
                     onClick={() => setIsOpen(false)}
                     className="block px-4 py-3 text-lg font-medium text-gray-700 hover:bg-gray-100 rounded-lg mb-2"
                   >
                     Login
-                  </Link> */}
+                  </Link>
                   <Link
                     to="/register"
                     onClick={() => setIsOpen(false)}

@@ -1,5 +1,5 @@
 const Booking = require("../models/Booking");
-const Route = require("../models/Route");
+const Route = require("../models/route.model.js");
 const sendEmail = require("../utils/email");
 
 // Create booking

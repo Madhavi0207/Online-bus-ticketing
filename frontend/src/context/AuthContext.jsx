@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
       const response = await api.get("/auth/profile", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setUser(response.data);
+      setUser(JSON.parse(JSON.stringify(response.data)));
     } catch (error) {
       localStorage.removeItem("token");
       setToken(null);
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
 
       localStorage.setItem("token", newToken);
       setToken(newToken);
-      setUser(userData);
+      setUser(JSON.parse(JSON.stringify(userData)));
       toast.success("Login successful!");
       return { success: true };
     } catch (error) {
@@ -63,10 +63,11 @@ export const AuthProvider = ({ children }) => {
 
       localStorage.setItem("token", newToken);
       setToken(newToken);
-      setUser(userDataWithoutToken);
+      setUser(JSON.parse(JSON.stringify(userDataWithoutToken)));
       toast.success("Registration successful!");
       return { success: true };
     } catch (error) {
+      console.error("Registration error:", error);
       toast.error(error.response?.data?.error || "Registration failed");
       return { success: false, error: error.response?.data?.error };
     }

@@ -3,17 +3,6 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const sendEmail = require("../utils/email");
 
-// Simple hash function for demo purposes
-const hashPassword = (password) => {
-  let hash = "";
-  for (let i = 0; i < password.length; i++) {
-    const charCode = password.charCodeAt(i);
-    // Simple transformation
-    hash += String.fromCharCode(((charCode * 13) % 94) + 33);
-  }
-  return hash;
-};
-
 // Register user
 const register = async (req, res) => {
   try {
@@ -29,7 +18,7 @@ const register = async (req, res) => {
     const user = await User.create({
       name,
       email,
-      password: hashPassword(password),
+      password,
       phone,
     });
 
@@ -61,7 +50,7 @@ const login = async (req, res) => {
     const user = await User.findOne({ email });
 
     // Hash the provided password and compare
-    const hashedPassword = hashPassword(password);
+    const hashedPassword = User.findOne({ email }).password;
 
     if (!user || user.password !== hashedPassword) {
       return res.status(401).json({ error: "Invalid credentials" });
