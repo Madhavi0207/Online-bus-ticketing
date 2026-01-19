@@ -5,6 +5,7 @@ import RegisterPage from "./pages/RegisterPage";
 import BookingPage from "./pages/BookingPage";
 import MyBookingsPage from "./pages/MyBookingsPage";
 import RoutesPage from "./pages/RoutesPage";
+import RouteDetails from "./pages/RouteDetails"; // Added import
 import ServicesPage from "./pages/ServicesPage";
 import Dashboard from "./admin/pages/Dashboard";
 import Analytics from "./admin/pages/Analytics";
@@ -43,6 +44,8 @@ function App() {
             }
           />
           <Route path="/routes" element={<RoutesPage />} />
+          <Route path="/routes/:id" element={<RouteDetails />} />{" "}
+          {/* Added route */}
           <Route path="/services" element={<ServicesPage />} />
           {/* Admin routes - protect as needed */}
           <Route
