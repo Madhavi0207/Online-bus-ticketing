@@ -65,10 +65,11 @@ const Navbar = () => {
                   >
                     Login
                   </Link>
+
                   <Link
                     to="/register"
                     onClick={() => setIsOpen(false)}
-                    className="block px-4 py-3 text-lg font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700"
+                    className="block px-4 py-3 text-lg font-medium text-gray-700 hover:bg-gray-100 rounded-lg mb-2"
                   >
                     Register
                   </Link>

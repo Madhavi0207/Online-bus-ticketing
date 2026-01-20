@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Search, Filter, MapPin, Clock, Users, ArrowRight } from "lucide-react";
-import busesAPI from "../services/busesAPI.js"; // Assuming busesAPI exists; create if not
+import busesAPI from "../services/busesAPI.js";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 
 const RoutesPage = () => {
@@ -92,9 +92,9 @@ const RoutesPage = () => {
   }
 
   return (
-    <div className="section-container">
+    <div className="section-container p-20 bg-white-100">
       <div className="text-center mb-12">
-        <h1 className="text-5xl font-bold text-gray-900 mb-4">
+        <h1 className="text-5xl font-bold text-yellow-600 mb-4">
           Explore Our Routes
         </h1>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -106,17 +106,17 @@ const RoutesPage = () => {
       <div className="card mb-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium-600 text-gray-700 mb-1">
               Search Routes
             </label>
-            <div className="relative">
+            <div className="relative rounded-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <input
                 type="text"
                 placeholder="Search by city or description"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="input-field pl-10"
+                className="input-field px-10 w-full h-8 rounded-md"
               />
             </div>
           </div>
@@ -132,7 +132,7 @@ const RoutesPage = () => {
                 placeholder="Departure city"
                 value={filters.from}
                 onChange={(e) => handleFilterChange("from", e.target.value)}
-                className="input-field pl-10"
+                className="input-field pl-10 w-full h-8 rounded-md"
               />
             </div>
           </div>
@@ -148,7 +148,7 @@ const RoutesPage = () => {
                 placeholder="Destination city"
                 value={filters.to}
                 onChange={(e) => handleFilterChange("to", e.target.value)}
-                className="input-field pl-10"
+                className="input-field pl-10 w-full h-8 rounded-md"
               />
             </div>
           </div>
@@ -160,7 +160,7 @@ const RoutesPage = () => {
             <select
               value={filters.sortBy}
               onChange={(e) => handleFilterChange("sortBy", e.target.value)}
-              className="input-field"
+              className="input-field w-full h-8 rounded-md"
             >
               <option value="price">Price: Low to High</option>
               <option value="duration">Duration: Shortest</option>
@@ -172,7 +172,7 @@ const RoutesPage = () => {
 
       {/* Routes Grid */}
       {filteredBuses.length === 0 ? (
-        <div className="text-center py-16">
+        <div className="text-center py-16 ">
           <MapPin className="h-16 w-16 text-gray-400 mx-auto mb-4" />
           <h3 className="text-2xl font-medium text-gray-900 mb-2">
             No routes found
@@ -180,11 +180,11 @@ const RoutesPage = () => {
           <p className="text-gray-600">Try adjusting your search criteria</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 p-4 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 p-4 md:grid-cols-2 lg:grid-cols-3 gap-6 b">
           {filteredBuses.map((bus) => (
             <div
               key={bus._id}
-              className="card hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300"
+              className="card hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 m-2 bg-gray-200 rounded-lg"
             >
               <div className="flex justify-between items-start m-4">
                 <div>
@@ -204,9 +204,9 @@ const RoutesPage = () => {
                 </div>
               </div>
 
-              <p className="text-gray-600 mb-4">Bus: {bus.busNumber}</p>
+              <p className="text-gray-600 mb-4 p-4">Bus: {bus.busNumber}</p>
 
-              <div className="space-y-2 mb-6">
+              <div className="space-y-2 mb-6 p-4">
                 <div className="flex items-center text-sm text-gray-600">
                   <Clock className="h-4 w-4 mr-2" />
                   <span>{bus.route?.duration || "N/A"}</span>{" "}
@@ -218,17 +218,17 @@ const RoutesPage = () => {
                 </div>
               </div>
 
-              <div className="flex space-x-3">
+              <div className="flex space-x-3 ">
                 <Link
                   to={`/booking?bus=${bus._id}`}
-                  className="btn-primary flex-1 flex items-center justify-center space-x-2"
+                  className="btn-primary flex-1 flex items-center justify-center space-x-2 bg-gray-400 p-3 m-2 rounded"
                 >
                   <span>Book Now</span>
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
                   to={`/routes/${bus._id}`}
-                  className="btn-secondary flex-1 text-center"
+                  className="btn-secondary flex-1 text-center bg-gray-400 p-3 m-2 rounded"
                 >
                   Details
                 </Link>
@@ -239,7 +239,7 @@ const RoutesPage = () => {
       )}
 
       {/* Stats */}
-      <div className="mt-12 bg-linear-to-r from-primary-500 to-primary-700 rounded-2xl p-8 text-white">
+      {/* <div className="mt-12 bg-linear-to-r from-primary-500 to-primary-700 rounded-2xl p-8 text-yellow-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           <div className="text-center">
             <div className="text-4xl font-bold mb-2">{buses.length}</div>
@@ -258,7 +258,7 @@ const RoutesPage = () => {
             <div className="text-sm opacity-90">Passengers Monthly</div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

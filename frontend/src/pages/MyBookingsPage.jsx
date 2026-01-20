@@ -114,7 +114,7 @@ const MyBookingsPage = () => {
             Start your journey by booking a trip
           </p>
           <a
-            href="/booking"
+            href="/routes"
             className="btn-primary inline-flex items-center space-x-2"
           >
             <span>Book Now</span>

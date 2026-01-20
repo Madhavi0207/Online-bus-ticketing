@@ -151,7 +151,7 @@ const BookingPage = () => {
           <>
             <div className="mb-6">
               <h3 className="text-lg font-semibold mb-2">
-                {selectedBus.route.from} → {selectedBus.route.to}
+                {selectedBus?.route?.from} → {selectedBus?.route?.to}
               </h3>
               <p className="text-gray-600 mb-2">
                 Total Seats: {selectedBus.totalSeats}, Available:{" "}
@@ -221,7 +221,7 @@ const BookingPage = () => {
             <div className="flex justify-between">
               <span>Route:</span>
               <span>
-                {selectedBus.route.from} → {selectedBus.route.to}
+                {selectedBus?.route?.from} → {selectedBus?.route?.to}
               </span>
             </div>
             {travelDate && (
