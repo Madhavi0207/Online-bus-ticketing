@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { servicesAPI } from "../services/api";
 import LoadingSpinner from "../components/common/LoadingSpinner";
+import Navbar from "../components/common/NavBar";
 
 const ServicesPage = () => {
   const [services, setServices] = useState([]);
@@ -55,9 +56,9 @@ const ServicesPage = () => {
   }
 
   return (
-    <div className="section-container">
-      <div className="text-center mb-12">
-        <h1 className="text-5xl font-bold text-gray-900 mb-4">
+    <div className="section-container p-20">
+      <div className="text-center mb-2">
+        <h1 className="text-5xl font-bold text-yellow-500 mb-4">
           Our Premium Services
         </h1>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -67,7 +68,7 @@ const ServicesPage = () => {
       </div>
 
       {/* Main Services */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-16 ">
         {services.map((service) => (
           <div
             key={service._id}
@@ -90,7 +91,10 @@ const ServicesPage = () => {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <div key={index} className="text-center">
+            <div
+              key={index}
+              className="text-center border p-20 rounded-lg bg-white shadow-md"
+            >
               <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-full shadow-lg mb-4">
                 <div className="text-primary-600">{feature.icon}</div>
               </div>
@@ -104,9 +108,9 @@ const ServicesPage = () => {
       {/* Booking Process */}
       <div className="text-center">
         <h2 className="text-3xl font-bold mb-8">Easy Booking in 3 Steps</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-          <div className="relative">
-            <div className="absolute -top-4 -left-4 w-8 h-8 bg-primary-600 text-white rounded-full flex items-center justify-center font-bold">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto ">
+          <div className="relative border-4 border-primary-500 rounded p-6">
+            <div className="absolute -top-4 -left-4 w-8 h-8 bg-primary-600 text-black rounded-full flex items-center justify-center font-bold">
               1
             </div>
             <div className="card pt-8">
@@ -116,8 +120,8 @@ const ServicesPage = () => {
               </p>
             </div>
           </div>
-          <div className="relative">
-            <div className="absolute -top-4 -left-4 w-8 h-8 bg-primary-600 text-white rounded-full flex items-center justify-center font-bold">
+          <div className="relative  border-4 border-primary-500 rounded-lg p-15">
+            <div className="absolute -top-4 -left-4 w-8 h-8 bg-primary-600 text-black rounded-full flex items-center justify-center font-bold">
               2
             </div>
             <div className="card pt-8">
@@ -127,8 +131,8 @@ const ServicesPage = () => {
               </p>
             </div>
           </div>
-          <div className="relative">
-            <div className="absolute -top-4 -left-4 w-8 h-8 bg-primary-600 text-white rounded-full flex items-center justify-center font-bold">
+          <div className="relative border-4 border-primary-500 rounded-lg p-15">
+            <div className="absolute -top-4 -left-4 w-8 h-8 bg-primary-600 text-black rounded-full flex items-center justify-center font-bold">
               3
             </div>
             <div className="card pt-8">

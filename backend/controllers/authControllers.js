@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const bcrypt = require("bcrypt");
 const sendEmail = require("../utils/email");
 
 // Register user
@@ -50,9 +51,9 @@ const login = async (req, res) => {
     const user = await User.findOne({ email });
 
     // Hash the provided password and compare
-    const hashedPassword = User.findOne({ email }).password;
-
-    if (!user || user.password !== hashedPassword) {
+    const hashedPassword = user.password;
+    const passwordMatch = await bcrypt.compare(password, hashedPassword);
+    if (passwordMatch === false) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
