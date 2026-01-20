@@ -26,7 +26,7 @@ const HeroSection = () => {
         <div className="relative z-10 w-full px-6">
           <div className="max-w-3xl mx-auto text-center">
             <div className="max-w-3xl">
-              <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+              <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight text-white">
                 Journey in Comfort,
                 <br />
                 <span className="text-yellow-400">Travel in Style</span>
