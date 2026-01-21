@@ -6,36 +6,13 @@ const SeatSelector = ({
   bookedSeats = [],
   selectedSeats,
   onSelectSeat,
-  onPassengerInfoChange,
 }) => {
-  const [passengerInfo, setPassengerInfo] = useState({});
-
   const seatsPerRow = 4;
   const totalRows = Math.ceil(totalSeats / seatsPerRow);
 
   const handleSeatClick = (seatNumber) => {
     if (bookedSeats.includes(seatNumber)) return;
     onSelectSeat(seatNumber);
-
-    // Initialize passenger info for new seat
-    if (!selectedSeats.includes(seatNumber)) {
-      setPassengerInfo((prev) => ({
-        ...prev,
-        [seatNumber]: { name: "", age: "" },
-      }));
-    }
-  };
-
-  const handlePassengerInfoChange = (seatNumber, field, value) => {
-    const updatedInfo = {
-      ...passengerInfo,
-      [seatNumber]: {
-        ...passengerInfo[seatNumber],
-        [field]: value,
-      },
-    };
-    setPassengerInfo(updatedInfo);
-    onPassengerInfoChange(seatNumber, field, value);
   };
 
   const renderSeat = (seatNumber) => {
