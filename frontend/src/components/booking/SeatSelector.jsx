@@ -88,18 +88,20 @@ const SeatSelector = ({
   return (
     <div className="space-y-6">
       {/* Seat Legend */}
-      <div className="flex justify-center space-x-6 mb-6">
-        <div className="flex items-center space-x-2">
-          <div className="w-6 h-6 bg-gray-100 rounded"></div>
-          <span className="text-sm text-gray-600">Available</span>
+      <div className="flex justify-center gap-8 mb-6 text-sm">
+        <div className="flex items-center gap-2">
+          <span className="w-5 h-5 rounded bg-gray-100 border border-gray-300"></span>
+          <span className="text-gray-600">Available</span>
         </div>
-        <div className="flex items-center space-x-2">
-          <div className="w-6 h-6 bg-primary-600 rounded"></div>
-          <span className="text-sm text-gray-600">Selected</span>
+
+        <div className="flex items-center gap-2">
+          <span className="w-5 h-5 rounded bg-blue-600 ring-2 ring-blue-300"></span>
+          <span className="text-gray-600">Selected</span>
         </div>
-        <div className="flex items-center space-x-2">
-          <div className="w-6 h-6 bg-red-100 rounded"></div>
-          <span className="text-sm text-gray-600">Booked</span>
+
+        <div className="flex items-center gap-2">
+          <span className="w-5 h-5 rounded bg-red-100 border border-red-300"></span>
+          <span className="text-gray-600">Booked</span>
         </div>
       </div>
 
@@ -114,7 +116,25 @@ const SeatSelector = ({
       </div>
 
       {/* Selection Summary */}
-      <div className="bg-primary-50 rounded-xl p-4">
+      {/* {selectedSeats.length > 0 && (
+        <div className="bg-primary-50 rounded-xl p-4 bottom-4 shadow-lg">
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="font-semibold text-gray-900">
+                {selectedSeats.length} seat
+                {selectedSeats.length !== 1 ? "s" : ""} selected
+              </div>
+              <div className="text-sm text-gray-600">
+                Seats: {selectedSeats.join(", ")}
+              </div>
+            </div>
+            <div className="text-lg font-bold text-primary-600">
+              Total Seats: {selectedSeats.length}
+            </div>
+          </div>
+        </div>
+      )} */}
+      {/* <div className="bg-primary-50 rounded-xl p-4">
         <div className="flex justify-between items-center">
           <div>
             <div className="font-semibold text-gray-900">
@@ -129,7 +149,7 @@ const SeatSelector = ({
             Total Seats: {selectedSeats.length}
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

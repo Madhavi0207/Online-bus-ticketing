@@ -89,7 +89,7 @@ const BookingPage = () => {
     setLoading(true);
     try {
       const payload = {
-        busId: selectedBus._id,
+        busId,
         seats: selectedSeats,
         travelDate,
         passengers: passengerInfo,
@@ -214,7 +214,7 @@ const BookingPage = () => {
       </div>
 
       {/* Booking Summary Sidebar */}
-      {step >= 2 && (
+      {/* {selectedSeats.length > 0 && (
         <div className="mt-6 bg-white rounded-xl shadow-lg p-6">
           <h3 className="text-lg font-semibold mb-4">Booking Summary</h3>
           <div className="space-y-3">
@@ -236,6 +236,37 @@ const BookingPage = () => {
                 <span>{selectedSeats.join(", ")}</span>
               </div>
             )}
+            <div className="border-t pt-3 flex justify-between font-bold text-lg">
+              <span>Total Amount:</span>
+              <span className="text-primary-600">NPR {totalAmount}</span>
+            </div>
+          </div>
+        </div>
+      )} */}
+      {selectedSeats.length > 0 && (
+        <div className="fixed right-6 bottom-20 w-80 bg-white rounded-xl shadow-lg p-6 z-40">
+          <h3 className="text-lg font-semibold mb-4">Booking Summary</h3>
+
+          <div className="space-y-3">
+            <div className="flex justify-between">
+              <span>Route:</span>
+              <span>
+                {selectedBus?.route?.from} → {selectedBus?.route?.to}
+              </span>
+            </div>
+
+            {travelDate && (
+              <div className="flex justify-between">
+                <span>Date:</span>
+                <span>{new Date(travelDate).toLocaleDateString()}</span>
+              </div>
+            )}
+
+            <div className="flex justify-between">
+              <span>Seats:</span>
+              <span>{selectedSeats.join(", ")}</span>
+            </div>
+
             <div className="border-t pt-3 flex justify-between font-bold text-lg">
               <span>Total Amount:</span>
               <span className="text-primary-600">NPR {totalAmount}</span>
