@@ -12,7 +12,7 @@ connectDB();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());
 
 // Routes
@@ -25,9 +25,6 @@ app.use("/api/buses", require("./routes/busesRoutes"));
 
 // Default route
 const PORT = process.env.PORT || 3000;
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to Let's Go Bus API" });
-});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

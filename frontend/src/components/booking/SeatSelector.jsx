@@ -61,7 +61,7 @@ const SeatSelector = ({
         disabled={isBooked}
         className={seatClass}
       >
-        {isSelected ? <UserCheck className="h-5 w-5" /> : seatNumber}
+        {isSelected ? <UserCheck className="h-5 w-5 text-black" /> : seatNumber}
       </button>
     );
   };
@@ -79,7 +79,7 @@ const SeatSelector = ({
       seatRows.push(
         <div key={row} className="flex justify-center space-x-4 mb-4">
           {rowSeats}
-        </div>
+        </div>,
       );
     }
     return seatRows;
@@ -144,7 +144,7 @@ const SeatSelector = ({
                         handlePassengerInfoChange(
                           seatNumber,
                           "name",
-                          e.target.value
+                          e.target.value,
                         )
                       }
                       placeholder="Full name"
@@ -163,7 +163,7 @@ const SeatSelector = ({
                         handlePassengerInfoChange(
                           seatNumber,
                           "age",
-                          e.target.value
+                          e.target.value,
                         )
                       }
                       placeholder="Age"
