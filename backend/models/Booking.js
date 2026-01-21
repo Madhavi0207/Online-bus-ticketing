@@ -11,12 +11,10 @@ const bookingSchema = new mongoose.Schema({
     ref: "Route",
     required: true,
   },
-  seats: [
+  selectedSeats: [
     {
-      seatNumber: {
-        type: String,
-        required: true,
-      },
+      type: String,
+      required: true,
     },
   ],
   totalAmount: {

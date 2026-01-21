@@ -96,39 +96,63 @@ const BookingPage = () => {
   const handleBack = () => setStep(step - 1);
 
   // Final Payment & Booking Submission
-  const handleConfirmBooking = async () => {
-    // 1. Validate Form
-    if (!bookerDetails.name || !bookerDetails.email || !bookerDetails.phone) {
-      toast.error("Please fill in all booker details.");
-      return;
-    }
+  // const handleConfirmBooking = async () => {
+  //   // 1. Validate Form
+  //   if (!bookerDetails.name || !bookerDetails.email || !bookerDetails.phone) {
+  //     toast.error("Please fill in all booker details.");
+  //     return;
+  //   }
 
+  //   setLoading(true);
+  //   try {
+  //     // 2. Prepare Payload
+  //     const payload = {
+  //       busId,
+  //       seats: selectedSeats,
+  //       travelDate,
+  //       bookerName: bookerDetails.name,
+  //       bookerEmail: bookerDetails.email,
+  //       bookerPhone: bookerDetails.phone,
+  //       paymentMethod: bookerDetails.paymentMethod,
+  //       totalAmount,
+  //     };
+
+  //     // 3. Call API
+  //     // Note: In a real app, you might redirect to a payment gateway here
+  //     // and call the create booking API after success/webhook.
+  //     const res = await bookingsAPI.create(payload);
+
+  //     toast.success("Booking confirmed successfully!");
+  //     navigate("/my-bookings");
+  //   } catch (err) {
+  //     console.error(err);
+  //     const msg =
+  //       err.response?.data?.message || "Booking failed. Please try again.";
+  //     toast.error(msg);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  const handleConfirmBooking = async () => {
     setLoading(true);
     try {
-      // 2. Prepare Payload
       const payload = {
-        busId,
-        seats: selectedSeats,
-        travelDate,
+        busId: selectedBus._id,
+        routeId: selectedBus.route._id,
+        travelDate: travelDate,
+        selectedSeats: selectedSeats, // The array of strings [ "A1", "B2" ]
+        totalAmount: totalAmount,
+        // The single point of contact
         bookerName: bookerDetails.name,
         bookerEmail: bookerDetails.email,
         bookerPhone: bookerDetails.phone,
-        paymentMethod: bookerDetails.paymentMethod,
-        totalAmount,
       };
 
-      // 3. Call API
-      // Note: In a real app, you might redirect to a payment gateway here
-      // and call the create booking API after success/webhook.
       const res = await bookingsAPI.create(payload);
-
-      toast.success("Booking confirmed successfully!");
+      toast.success("Booking Request Sent!");
       navigate("/my-bookings");
     } catch (err) {
-      console.error(err);
-      const msg =
-        err.response?.data?.message || "Booking failed. Please try again.";
-      toast.error(msg);
+      toast.error("Booking failed to save.");
     } finally {
       setLoading(false);
     }
