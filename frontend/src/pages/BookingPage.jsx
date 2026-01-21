@@ -144,26 +144,36 @@ const BookingPage = () => {
     <div className="section-container max-w-4xl mx-auto px-4 py-8">
       {/* Step Navigation */}
       <div className="mb-8 flex justify-between relative">
-        <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-200 -z-10 transform -translate-y-1/2"></div>
+        {/* Progress Line */}
+        <div className="absolute top-5 left-0 w-full h-1 bg-gray-200 -z-10 transform -translate-y-1/2"></div>
+
         {["Select Seats", "Select Date", "Payment"].map((title, index) => {
-          const stepNum = index + 2; // Steps start at 2 in logic
-          const isActive = step >= stepNum;
+          // index 0 = Seat Selection (Step 2)
+          // index 1 = Date Selection (Step 3)
+          // index 2 = Payment (Step 4)
+          const currentStepValue = index + 2;
+          const isActive = step >= currentStepValue;
+          const isCompleted = step > currentStepValue;
+
           return (
             <div
               key={index}
               className="flex flex-col items-center bg-white px-2"
             >
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 font-bold transition-colors ${
+                className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 font-bold transition-all duration-300 ${
                   isActive
-                    ? "bg-primary-600 text-white"
+                    ? "bg-primary-600 text-white ring-4 ring-primary-100"
                     : "bg-gray-200 text-gray-400"
                 }`}
               >
+                {/* This renders 1, 2, or 3 inside the circle */}
                 {index + 1}
               </div>
               <span
-                className={`text-sm font-medium ${isActive ? "text-primary-600" : "text-gray-500"}`}
+                className={`text-xs md:text-sm font-medium ${
+                  isActive ? "text-primary-600" : "text-gray-500"
+                }`}
               >
                 {title}
               </span>
@@ -250,7 +260,7 @@ const BookingPage = () => {
 
           {step < 4 && (
             <button
-              className="ml-auto px-6 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 font-medium shadow-md hover:shadow-lg transition-all"
+              className="ml-auto px-6 py-2 bg-primary-600 text-black rounded hover:bg-primary-700 font-medium shadow-md hover:shadow-lg transition-all"
               onClick={handleNext}
             >
               {step === 3 ? "Proceed to Payment" : "Next"}
