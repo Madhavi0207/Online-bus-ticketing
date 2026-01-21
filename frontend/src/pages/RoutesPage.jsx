@@ -94,7 +94,7 @@ const RoutesPage = () => {
   return (
     <div className="section-container p-20 bg-white-100">
       <div className="text-center mb-12">
-        <h1 className="text-5xl font-bold text-yellow-600 mb-4">
+        <h1 className="text-5xl font-bold text-green-600 mb-4">
           Explore Our Routes
         </h1>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -180,27 +180,27 @@ const RoutesPage = () => {
           <p className="text-gray-600">Try adjusting your search criteria</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 p-4 md:grid-cols-2 lg:grid-cols-3 gap-6 b">
+        <div className="grid grid-cols-1 m-10 md:grid-cols-2 lg:grid-cols-3 gap-6 mx-10 my-10">
           {filteredBuses.map((bus) => (
             <div
               key={bus._id}
-              className="card hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 m-2 bg-gray-200 rounded-lg"
+              className="card hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 m-2 bg-white rounded-lg"
             >
               <div className="flex justify-between items-start m-4">
                 <div>
-                  <div className="text-sm font-semibold text-primary-600 mb-1">
+                  {/* <div className="text-sm font-semibold text-primary-600 mb-1">
                     {bus.departureTime}
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900">
+                  </div> */}
+                  <h3 className="text-xl font-bold text-green-600">
                     {bus.route?.from || "Unknown"} →{" "}
                     {bus.route?.to || "Unknown"}
                   </h3>
                 </div>
                 <div className="text-right">
-                  <div className="text-2xl font-bold text-gray-900">
+                  <div className="text-2xl font-bold text-green-600">
                     NPR {bus.price}
                   </div>
-                  <div className="text-sm text-gray-500">per seat</div>
+                  <div className="text-sm text-green-500">per seat</div>
                 </div>
               </div>
 
@@ -218,17 +218,17 @@ const RoutesPage = () => {
                 </div>
               </div>
 
-              <div className="flex space-x-3 ">
+              <div className="flex space-x-3  px-3 ">
                 <Link
                   to={`/booking?bus=${bus._id}`}
-                  className="btn-primary flex-1 flex items-center justify-center space-x-2 bg-gray-400 p-3 m-2 rounded"
+                  className="btn-primary flex-1 flex items-center justify-center space-x-2 bg-green-400 p-3 m-2 rounded"
                 >
                   <span>Book Now</span>
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
                   to={`/routes/${bus._id}`}
-                  className="btn-secondary flex-1 text-center bg-gray-400 p-3 m-2 rounded"
+                  className="btn-secondary flex-1 text-center bg-green-400 p-3 m-2 rounded"
                 >
                   Details
                 </Link>
@@ -237,28 +237,6 @@ const RoutesPage = () => {
           ))}
         </div>
       )}
-
-      {/* Stats */}
-      {/* <div className="mt-12 bg-linear-to-r from-primary-500 to-primary-700 rounded-2xl p-8 text-yellow-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div className="text-center">
-            <div className="text-4xl font-bold mb-2">{buses.length}</div>
-            <div className="text-sm opacity-90">Active Routes</div>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl font-bold mb-2">40+</div>
-            <div className="text-sm opacity-90">Buses</div>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl font-bold mb-2">95%</div>
-            <div className="text-sm opacity-90">On-time Performance</div>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl font-bold mb-2">50K+</div>
-            <div className="text-sm opacity-90">Passengers Monthly</div>
-          </div>
-        </div>
-      </div> */}
     </div>
   );
 };
