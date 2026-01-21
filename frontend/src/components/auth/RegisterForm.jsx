@@ -55,7 +55,7 @@ const RegisterForm = () => {
   return (
     <div className="max-w-md mx-auto">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">
+        <h2 className="text-3xl font-bold  mb-2 text-green-600">
           Create Account
         </h2>
         <p className="text-gray-600">
@@ -75,7 +75,7 @@ const RegisterForm = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="input-field pl-10"
+              className="input-field pl-10 w-full p-2 rounded-md"
               placeholder="John Doe"
               required
             />
@@ -93,7 +93,7 @@ const RegisterForm = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="input-field pl-10"
+              className="input-field pl-10 w-full rounded-md p-2"
               placeholder="you@example.com"
               required
             />
@@ -111,7 +111,7 @@ const RegisterForm = () => {
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              className="input-field pl-10"
+              className="input-field pl-10 w-full rounded-md p-2"
               placeholder="+977 9800000000"
               required
             />
@@ -129,7 +129,7 @@ const RegisterForm = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="input-field pl-10 pr-10"
+              className="input-field pl-10 pr-10 w-full rounded-md p-2"
               placeholder="••••••••"
               required
               minLength="6"
@@ -162,7 +162,7 @@ const RegisterForm = () => {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="input-field pl-10 pr-10"
+              className="input-field pl-10 pr-10 w-full rounded-md p-2"
               placeholder="••••••••"
               required
             />
@@ -205,20 +205,22 @@ const RegisterForm = () => {
           </label>
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {loading ? "Creating Account..." : "Create Account"}
-        </button>
+        <div className="flex justify-center">
+          <button
+            type="submit"
+            disabled={loading}
+            className=" p-2 text-center btn-primary disabled:opacity-50 disabled:cursor-not-allowed bg-green-600 rounded-md text-white"
+          >
+            {loading ? "Creating Account..." : "Create Account"}
+          </button>
+        </div>
 
         <div className="text-center">
           <p className="text-gray-600">
             Already have an account?{" "}
             <Link
               to="/login"
-              className="text-primary-600 hover:text-primary-700 font-semibold"
+              className="text-primary-600 hover:text-primary-700 font-semibold text-green-600"
             >
               Sign in
             </Link>

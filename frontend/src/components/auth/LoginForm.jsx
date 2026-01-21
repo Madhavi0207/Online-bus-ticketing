@@ -39,7 +39,7 @@ const LoginForm = () => {
   return (
     <div className="max-w-md mx-auto">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
+        <h2 className="text-3xl font-bold text-green-600 mb-2">Welcome Back</h2>
         <p className="text-gray-600">Sign in to your LuxuryRide account</p>
       </div>
 
@@ -55,7 +55,7 @@ const LoginForm = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="input-field pl-10"
+              className="input-field pl-10 p-2 w-full  rounded-md"
               placeholder="you@example.com"
               required
             />
@@ -73,7 +73,7 @@ const LoginForm = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="input-field pl-10 pr-10"
+              className="input-field pl-10 pr-10 w-full p-2 rounded-md"
               placeholder="••••••••"
               required
             />
@@ -112,21 +112,22 @@ const LoginForm = () => {
             Forgot password?
           </Link>
         </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {loading ? "Signing in..." : "Sign In"}
-        </button>
+        <div className="flex justify-center">
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-[20vh] p-2 text-center btn-primary disabled:opacity-50 disabled:cursor-not-allowed bg-green-600 rounded-md text-white"
+          >
+            {loading ? "Signing in..." : "Sign In"}
+          </button>
+        </div>
 
         <div className="text-center">
           <p className="text-gray-600">
             Don't have an account?{" "}
             <Link
               to="/register"
-              className="text-primary-600 hover:text-primary-700 font-semibold"
+              className="text-primary-600 hover:text-primary-700 font-semibold text-green-600"
             >
               Sign up
             </Link>
