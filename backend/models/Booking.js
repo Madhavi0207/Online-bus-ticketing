@@ -17,6 +17,18 @@ const bookingSchema = new mongoose.Schema({
       required: true,
     },
   ],
+  bookerName: {
+    type: String,
+    required: true,
+  },
+  bookerEmail: {
+    type: String,
+    required: true,
+  },
+  bookerPhone: {
+    type: String,
+    required: true,
+  },
   totalAmount: {
     type: Number,
     required: true,
