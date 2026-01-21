@@ -17,14 +17,6 @@ const bookingSchema = new mongoose.Schema({
         type: String,
         required: true,
       },
-      passengerName: {
-        type: String,
-        required: true,
-      },
-      passengerAge: {
-        type: Number,
-        required: true,
-      },
     },
   ],
   totalAmount: {
