@@ -74,12 +74,12 @@ const createBooking = async (req, res) => {
     });
 
     // 6. Send Email
-    const emailHtml = `<h1>Booking Confirmed</h1><p>Ticket No: ${ticketNumber}</p><p>Seats: ${selectedSeats.join(", ")}</p>`;
-    await sendEmail({
-      to: bookerEmail,
-      subject: "Your Bus Ticket",
-      html: emailHtml,
-    });
+    // const emailHtml = `<h1>Booking Confirmed</h1><p>Ticket No: ${ticketNumber}</p><p>Seats: ${selectedSeats.join(", ")}</p>`;
+    // await sendEmail({
+    //   to: bookerEmail,
+    //   subject: "Your Bus Ticket",
+    //   html: emailHtml,
+    // });
 
     res.status(201).json(booking);
   } catch (error) {
