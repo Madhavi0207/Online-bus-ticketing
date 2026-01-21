@@ -17,12 +17,14 @@ import SendTickets from "./admin/pages/SendTickets";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import { Toaster } from "react-hot-toast"; // Add this import
+import Navbar from "./components/common/NavBar";
 
 function App() {
   return (
     <AuthProvider>
       <Toaster position="top-right" /> {/* Add Toaster component */}
       <Router>
+        <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />

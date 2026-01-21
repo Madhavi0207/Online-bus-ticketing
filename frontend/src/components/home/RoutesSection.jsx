@@ -29,8 +29,8 @@ const RoutesSection = () => {
 
   return (
     <section className="section-container">
-      <div className="text-center mb-12">
-        <h2 className="text-4xl font-bold text-gray-900 mb-4">
+      <div className="text-center mb-12 p-10">
+        <h2 className="text-4xl font-bold text-green-700 mb-4">
           Popular Routes
         </h2>
         <p className="text-gray-600 max-w-2xl mx-auto">
@@ -42,11 +42,11 @@ const RoutesSection = () => {
         {routes.map((route) => (
           <div
             key={route._id}
-            className="card border-2 border-gray-200 hover:border-primary-500 rounded-md bg-yellow-200  px-10 py-15"
+            className="card border-2 border-gray-200 hover:border-primary-500 rounded-md "
           >
             <div className="flex justify-between items-start mb-4 p-5 ">
               <div>
-                <h3 className="text-xl font-bold text-gray-900">
+                <h3 className="text-xl font-bold text-green-600 ">
                   {route.from} → {route.to}
                 </h3>
                 <p className="text-gray-600 text-sm mt-1">
@@ -55,7 +55,7 @@ const RoutesSection = () => {
               </div>
             </div>
 
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-6 text-center">
               <div className="flex items-center space-x-4 text-gray-600">
                 <div className="flex items-center space-x-1">
                   <Clock className="h-4 w-4" />
@@ -64,17 +64,17 @@ const RoutesSection = () => {
               </div>
             </div>
 
-            <div className="flex space-x-3">
-              <Link
+            <div className="text-center">
+              {/* <Link
                 to={`/booking?route=${route._id}`}
                 className="btn-primary flex-1 flex items-center justify-center space-x-2"
               >
                 <span>Book Now</span>
                 <ArrowRight className="h-4 w-4" />
-              </Link>
+              </Link> */}
               <Link
                 to={`/routes/${route._id}`}
-                className="btn-secondary flex-1 text-center"
+                className="btn-primary flex-1 text-center bg-green-600 text-white px-4 py-2 m-2 rounded-lg transition-colors hover:bg-green-700"
               >
                 View Details
               </Link>
@@ -86,7 +86,7 @@ const RoutesSection = () => {
       <div className="text-center mt-8">
         <Link
           to="/routes"
-          className="inline-flex items-center space-x-2 text-primary-600 hover:text-primary-700 font-semibold"
+          className="inline-flex items-center space-x-2 text-primary-600 hover:text-primary-700 font-semibold text-white bg-green-600 p-5 mb-10 rounded"
         >
           <span>View All Routes</span>
           <ArrowRight className="h-5 w-5" />
