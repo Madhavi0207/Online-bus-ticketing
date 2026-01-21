@@ -38,11 +38,11 @@ const RoutesSection = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-10 ">
         {routes.map((route) => (
           <div
             key={route._id}
-            className="card border-2 border-gray-200 hover:border-primary-500 rounded-md "
+            className="card border-2 border-gray-200 hover:border-primary-500 rounded-md p-8 "
           >
             <div className="flex justify-between items-start mb-4 p-5 ">
               <div>
@@ -55,7 +55,7 @@ const RoutesSection = () => {
               </div>
             </div>
 
-            <div className="flex items-center justify-between mb-6 text-center">
+            <div className="flex items-center justify-between mb-6 text-center pl-2">
               <div className="flex items-center space-x-4 text-gray-600">
                 <div className="flex items-center space-x-1">
                   <Clock className="h-4 w-4" />
@@ -64,7 +64,7 @@ const RoutesSection = () => {
               </div>
             </div>
 
-            <div className="text-center">
+            <div className="text-left">
               {/* <Link
                 to={`/booking?route=${route._id}`}
                 className="btn-primary flex-1 flex items-center justify-center space-x-2"
