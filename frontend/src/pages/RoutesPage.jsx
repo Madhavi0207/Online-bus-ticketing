@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Search, Filter, MapPin, Clock, Users, ArrowRight } from "lucide-react";
 import busesAPI from "../services/busesAPI.js";
+import { dummyBuses } from "../data/dummyBuses";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 
 const RoutesPage = () => {
@@ -26,10 +27,14 @@ const RoutesPage = () => {
   const fetchRoutes = async () => {
     try {
       const response = await busesAPI.getAll(); // Fetch buses with populated routes
-      setBuses(response.data);
-      setFilteredBuses(response.data);
+      const apiBuses = response.data || [];
+      const nextBuses = apiBuses.length > 0 ? apiBuses : dummyBuses;
+      setBuses(nextBuses);
+      setFilteredBuses(nextBuses);
     } catch (error) {
       console.error("Error fetching buses:", error);
+      setBuses(dummyBuses);
+      setFilteredBuses(dummyBuses);
     } finally {
       setLoading(false);
     }

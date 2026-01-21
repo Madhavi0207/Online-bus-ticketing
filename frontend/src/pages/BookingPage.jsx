@@ -7,6 +7,7 @@ import { bookingsAPI } from "../services/api"; // Ensure this matches your expor
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import SeatSelector from "../components/booking/SeatSelector";
 import BookingForm from "../components/booking/BookingForm";
+import { getDummyBusById } from "../data/dummyBuses";
 
 const MAX_SEATS_PER_BOOKING = 6;
 
@@ -46,7 +47,12 @@ const BookingPage = () => {
       const res = await busesAPI.getById(id);
       setSelectedBus(res.data);
     } catch (err) {
-      toast.error("Failed to load bus details.");
+      const fallbackBus = getDummyBusById(id);
+      if (fallbackBus) {
+        setSelectedBus(fallbackBus);
+      } else {
+        toast.error("Failed to load bus details.");
+      }
     } finally {
       setLoading(false);
     }
@@ -94,6 +100,12 @@ const BookingPage = () => {
     }
     if (!bookerDetails.paymentMethod) {
       toast.error("Please select a payment method.");
+      return;
+    }
+
+    if (selectedBus?.isDummy) {
+      toast.success("booking confirmed successfully!");
+      navigate("/my-bookings");
       return;
     }
 

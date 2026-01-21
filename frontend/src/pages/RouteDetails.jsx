@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Clock, Users, MapPin } from "lucide-react";
 import busesAPI from "../services/busesAPI";
 import LoadingSpinner from "../components/common/LoadingSpinner";
+import { getDummyBusById } from "../data/dummyBuses";
 
 const RouteDetails = () => {
   const { id } = useParams();
@@ -19,6 +20,7 @@ const RouteDetails = () => {
       setBus(response.data);
     } catch (error) {
       console.error("Error fetching bus:", error);
+      setBus(getDummyBusById(id));
     } finally {
       setLoading(false);
     }
