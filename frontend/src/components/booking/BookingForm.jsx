@@ -79,7 +79,7 @@ const BookingForm = ({
             Payment Method
           </h3>
           <div className="grid grid-cols-2 gap-4">
-            {["esewa", "khalti", "card"].map((method) => (
+            {["esewa", "khalti", "card", "cash"].map((method) => (
               <label
                 key={method}
                 className={`relative flex items-center justify-center p-4 border rounded-xl cursor-pointer hover:bg-gray-50 transition-all ${
