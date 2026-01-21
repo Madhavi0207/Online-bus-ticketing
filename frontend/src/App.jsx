@@ -18,6 +18,7 @@ import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import { Toaster } from "react-hot-toast"; // Add this import
 import Navbar from "./components/common/NavBar";
+import Footer from "./components/common/Footer";
 
 function App() {
   return (
@@ -107,6 +108,7 @@ function App() {
             }
           />
         </Routes>
+        <Footer />
       </Router>
     </AuthProvider>
   );

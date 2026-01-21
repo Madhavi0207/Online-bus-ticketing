@@ -1,7 +1,6 @@
 import HeroSection from "../components/home/HeroSection";
 import ServiceSection from "../components/home/ServiceSection";
 import RoutesSection from "../components/home/RoutesSection";
-import Footer from "../components/common/Footer";
 
 const HomePage = () => {
   return (
@@ -9,7 +8,6 @@ const HomePage = () => {
       <HeroSection />
       <ServiceSection />
       <RoutesSection />
-      <Footer />
     </div>
   );
 };

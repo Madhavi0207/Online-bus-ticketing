@@ -29,7 +29,7 @@ const HeroSection = () => {
               <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight text-white">
                 Journey in Comfort,
                 <br />
-                <span className="text-green-600">Travel in Style</span>
+                <span className="text-green-400">Travel in Style</span>
               </h1>
 
               <p className="text-lg md:text-xl mb-8 text-gray-200">
@@ -42,7 +42,7 @@ const HeroSection = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   to="/routes"
-                  className="inline-flex items-center justify-center px-8 py-3 rounded-lg bg-green-600 text-black font-semibold hover:bg-yellow-500 transition "
+                  className="inline-flex items-center justify-center px-8 py-3 rounded-lg bg-green-400 text-black font-semibold hover:bg-white transition "
                 >
                   Book a Ride
                   <ArrowRight className="ml-2 h-5 w-5" />
