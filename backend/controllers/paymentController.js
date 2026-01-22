@@ -23,11 +23,11 @@ exports.initiateKhaltiPayment = async (req, res) => {
         name: booking.user.name,
         email: booking.user.email,
       },
-      amount_breakdown: booking.seats.map((seat) => ({
+      amount_breakdown: booking.selectedSeats.map((seat) => ({
         label: `Seat ${seat.seatNumber}`,
         amount: booking.route.price * 100,
       })),
-      product_details: booking.seats.map((seat) => ({
+      product_details: booking.selectedSeats.map((seat) => ({
         identity: seat.seatNumber,
         name: seat.passengerName,
         qty: 1,

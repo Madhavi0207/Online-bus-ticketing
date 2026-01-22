@@ -149,7 +149,7 @@ const MyBookingsPage = () => {
                         </div>
                         <div className="flex items-center">
                           <Users className="h-4 w-4 mr-1" />
-                          <span>{booking.seats.length} seat(s)</span>
+                          <span>{booking.selectedSeats.length} seat(s)</span>
                         </div>
                       </div>
                     </div>
@@ -159,7 +159,7 @@ const MyBookingsPage = () => {
                   <div className="bg-gray-50 rounded-lg p-4 mb-4">
                     <h4 className="font-semibold mb-2">Passenger Details</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                      {booking.seats.map((seat, index) => (
+                      {booking.selectedSeats.map((seat, index) => (
                         <div key={index} className="bg-white rounded p-3">
                           <div className="font-medium">
                             Seat {seat.seatNumber}

@@ -13,7 +13,6 @@ const Navbar = () => {
     { name: "Home", path: "/" },
     { name: "Services", path: "/services" },
     { name: "Routes", path: "/routes" },
-    { name: "Booking", path: "/booking" },
     ...(isAuthenticated ? [{ name: "My Bookings", path: "/my-bookings" }] : []),
     ...(user?.isAdmin ? [{ name: "Admin Panel", path: "/admin" }] : []),
   ];
