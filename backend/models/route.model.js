@@ -17,18 +17,6 @@ const routeSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  availableSeats: {
-    type: Number,
-    default: 40,
-  },
-  totalSeats: {
-    type: Number,
-    default: 40,
-  },
-  departureTime: {
-    type: Date,
-    required: true,
-  },
   isActive: {
     type: Boolean,
     default: true,

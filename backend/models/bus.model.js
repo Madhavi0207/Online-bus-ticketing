@@ -37,6 +37,10 @@ const busSchema = new mongoose.Schema({
     type: Number,
     default: 40,
   },
+  availableSeats: {
+    type: Number,
+    default: 40,
+  },
   seats: [seatSchema], // Added: Array of seat subdocuments
   departureTime: {
     type: Date,
