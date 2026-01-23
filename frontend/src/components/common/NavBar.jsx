@@ -5,10 +5,9 @@ import { useAuth } from "../../context/AuthContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isAuthenticated, user, logout } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const location = useLocation();
 
-  // Base navigation items
   const navItems = [
     { name: "Home", path: "/" },
     { name: "Services", path: "/services" },
@@ -21,36 +20,32 @@ const Navbar = () => {
 
   return (
     <nav className="bg-green-600 shadow-md px-6 py-4 flex justify-between items-center relative text-white">
-      {/* Logo / Brand */}
-      <Link to="/" className="text-2xl font-bold text-primary-600 ">
+      <Link to="/" className="text-2xl font-bold text-white">
         LuxuryRide
       </Link>
 
-      {/* Desktop nav items */}
-      <div className="hidden md:flex items-center space-x-6 text-white">
+      {/* Desktop nav */}
+      <div className="hidden md:flex items-center space-x-6">
         {navItems.map((item) => (
           <Link
             key={item.path}
             to={item.path}
             className={`font-medium ${
               location.pathname === item.path
-                ? "text-primary-600 underline"
-                : "text-gray-700 hover:text-primary-600"
+                ? "text-white underline"
+                : "text-gray-200 hover:text-white"
             }`}
           >
             {item.name}
           </Link>
         ))}
 
-        {/* Auth buttons */}
         {isAuthenticated ? (
           <>
-            <span className="font-medium text-gray-700">
-              Hi, {user.name || user.email}
-            </span>
+            <span className="font-medium text-white">Hi, {user.name}</span>
             <button
               onClick={logout}
-              className="ml-4 px-3 py-1 rounded hover:bg-gray-100 text-white font-medium"
+              className="ml-4 px-3 py-1 rounded hover:bg-green-700 font-medium"
             >
               Logout
             </button>
@@ -59,13 +54,13 @@ const Navbar = () => {
           <>
             <Link
               to="/login"
-              className="text-gray-700 hover:text-primary-600 font-medium"
+              className="text-gray-200 hover:text-white font-medium"
             >
               Login
             </Link>
             <Link
               to="/register"
-              className="text-gray-700 hover:text-primary-600 font-medium"
+              className="text-gray-200 hover:text-white font-medium"
             >
               Register
             </Link>
@@ -77,7 +72,7 @@ const Navbar = () => {
       <div className="md:hidden">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="p-2 rounded-md bg-white shadow-lg"
+          className="p-2 rounded-md bg-white text-green-600"
         >
           {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
@@ -94,7 +89,7 @@ const Navbar = () => {
                 onClick={() => setIsOpen(false)}
                 className={`px-4 py-3 text-lg font-medium rounded-lg ${
                   location.pathname === item.path
-                    ? "bg-primary-50 text-primary-600"
+                    ? "bg-green-100 text-green-600"
                     : "text-gray-700 hover:bg-gray-100"
                 }`}
               >
@@ -102,42 +97,39 @@ const Navbar = () => {
               </Link>
             ))}
 
-            {/* Auth buttons for mobile */}
-            <div className="pt-6">
-              {isAuthenticated ? (
-                <>
-                  <span className="block mb-2 font-medium text-gray-700">
-                    Hi, {user.name || user.email}
-                  </span>
-                  <button
-                    onClick={() => {
-                      logout();
-                      setIsOpen(false);
-                    }}
-                    className="block w-full px-4 py-3 text-lg font-medium text-red-600 hover:bg-red-50 rounded-lg"
-                  >
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/login"
-                    onClick={() => setIsOpen(false)}
-                    className="block px-4 py-3 text-lg font-medium text-gray-700 hover:bg-gray-100 rounded-lg mb-2"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    to="/register"
-                    onClick={() => setIsOpen(false)}
-                    className="block px-4 py-3 text-lg font-medium text-gray-700 hover:bg-gray-100 rounded-lg mb-2"
-                  >
-                    Register
-                  </Link>
-                </>
-              )}
-            </div>
+            {isAuthenticated ? (
+              <>
+                <span className="block mb-2 font-medium text-gray-700">
+                  Hi, {user.name}
+                </span>
+                <button
+                  onClick={() => {
+                    logout();
+                    setIsOpen(false);
+                  }}
+                  className="block w-full px-4 py-3 text-lg font-medium text-red-600 hover:bg-red-50 rounded-lg"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  onClick={() => setIsOpen(false)}
+                  className="block px-4 py-3 text-lg font-medium text-gray-700 hover:bg-gray-100 rounded-lg mb-2"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  onClick={() => setIsOpen(false)}
+                  className="block px-4 py-3 text-lg font-medium text-gray-700 hover:bg-gray-100 rounded-lg mb-2"
+                >
+                  Register
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}

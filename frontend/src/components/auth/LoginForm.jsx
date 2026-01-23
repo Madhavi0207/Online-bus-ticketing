@@ -2,27 +2,21 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
-import { toast } from "react-hot-toast";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    role: "user", // 👈 user | admin
+    role: "user", // user or admin
   });
-
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
+  const handleChange = (e) =>
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,11 +29,7 @@ const LoginForm = () => {
     );
 
     if (result.success) {
-      if (formData.role === "admin") {
-        navigate("/admin/dashboard");
-      } else {
-        navigate("/");
-      }
+      navigate(formData.role === "admin" ? "/admin/dashboard" : "/");
     }
 
     setLoading(false);
@@ -47,7 +37,7 @@ const LoginForm = () => {
 
   return (
     <div className="max-w-md mx-auto">
-      {/* 🔽 ROLE SELECTOR */}
+      {/* Role selector */}
       <div className="flex justify-start mb-4">
         <select
           name="role"
@@ -60,7 +50,6 @@ const LoginForm = () => {
         </select>
       </div>
 
-      {/* HEADER */}
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-green-600 mb-2">
           {formData.role === "admin" ? "Admin Login" : "Welcome Back"}
@@ -72,9 +61,7 @@ const LoginForm = () => {
         </p>
       </div>
 
-      {/* FORM */}
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* EMAIL */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Email Address
@@ -92,7 +79,6 @@ const LoginForm = () => {
           </div>
         </div>
 
-        {/* PASSWORD */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Password
@@ -117,7 +103,6 @@ const LoginForm = () => {
           </div>
         </div>
 
-        {/* SUBMIT */}
         <button
           type="submit"
           disabled={loading}
@@ -126,7 +111,6 @@ const LoginForm = () => {
           {loading ? "Signing in..." : "Sign In"}
         </button>
 
-        {/* REGISTER (USER ONLY) */}
         {formData.role === "user" && (
           <p className="text-center text-sm">
             Don’t have an account?{" "}
