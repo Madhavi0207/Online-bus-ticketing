@@ -11,15 +11,16 @@ dotenv.config();
 // Connect to database
 connectDB();
 const createAdmin = async () => {
-  const hashedPassword = await bcrypt.hash("admin123", 10);
-
-  await User.create({
-    name: "Madmin",
-    email: "admin@admin.com",
-    password: hashedPassword,
-    isAdmin: true,
-  });
-
+  try {
+    await User.create({
+      name: "Maddie",
+      email: "su@mail.com",
+      password: "admin123",
+      isAdmin: true,
+    });
+  } catch (error) {
+    console.error({ error: error.message });
+  }
   console.log("Admin created");
 };
 

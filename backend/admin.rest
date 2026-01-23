@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:5000/api
 @userToken = 
-@adminToken = 
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzM0OTQ2ZWIyNWU0ZDg1YjY1ZGMxMCIsImlzQWRtaW4iOnRydWUsImlhdCI6MTc2OTE2MzQ4MywiZXhwIjoxNzY5NzY4MjgzfQ.HoM2b0u9YcDx8Bt2U5Tma20KClr3UnnxpxlxY5L7Gb4
 
 ############################
 ### USER REGISTER
@@ -42,7 +42,7 @@ POST {{baseUrl}}/admin/auth/login
 Content-Type: application/json
 
 {
-  "email": "admin@admin.com",
+  "email": "su@mail.com",
   "password": "admin123"
 }
 
@@ -65,19 +65,19 @@ Authorization: Bearer {{adminToken}}
 ############################
 ### ADMIN GET ALL USERS
 ############################
-GET {{baseUrl}}/users
+GET {{baseUrl}}/admin/users
 Authorization: Bearer {{adminToken}}
 
 ############################
 ### ADMIN DELETE USER
 ############################
-DELETE {{baseUrl}}/users/USER_ID_HERE
+DELETE {{baseUrl}}/admin/users/69576e63e223f54edb54c624
 Authorization: Bearer {{adminToken}}
 
 ############################
 ### FORGOT PASSWORD
 ############################
-POST {{baseUrl}}/auth/forgot-password
+POST {{baseUrl}}/admin/auth/forgot-password
 Content-Type: application/json
 
 {
@@ -87,7 +87,7 @@ Content-Type: application/json
 ############################
 ### RESET PASSWORD
 ############################
-POST {{baseUrl}}/auth/reset-password/RESET_TOKEN_HERE
+POST {{baseUrl}}/admin/auth/reset-password/RESET_TOKEN_HERE
 Content-Type: application/json
 
 {
