@@ -8,22 +8,28 @@ const {
   updateBus,
   deleteBus,
   getBookings,
-} = require("../controllers/adminControllers");
+  getRoutes,
+  createRoute,
+  updateRoute,
+  deleteRoute,
+} = require("../controllers/admin.controller");
 
-// ===== Admin Dashboard APIs =====
-
-// Get all users
+// ===== User Management =====
 router.get("/users", auth, adminAuth, getUsers);
-
-// Delete a user
 router.delete("/users/:id", auth, adminAuth, deleteUser);
 
-// Bus Management
+// ===== Bus Management =====
 router.post("/buses", auth, adminAuth, createBus);
 router.put("/buses/:id", auth, adminAuth, updateBus);
 router.delete("/buses/:id", auth, adminAuth, deleteBus);
 
-// View all bookings
+// ===== Booking Management =====
 router.get("/bookings", auth, adminAuth, getBookings);
+
+// ===== Routes Management =====
+router.get("/routes", auth, adminAuth, getRoutes);
+router.post("/routes", auth, adminAuth, createRoute);
+router.put("/routes/:id", auth, adminAuth, updateRoute);
+router.delete("/routes/:id", auth, adminAuth, deleteRoute);
 
 module.exports = router;

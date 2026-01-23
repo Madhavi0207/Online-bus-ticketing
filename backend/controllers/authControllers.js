@@ -4,10 +4,24 @@ const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const sendEmail = require("../utils/email");
 
+const generateToken = (user) => {
+  return jwt.sign(
+    { id: user._id, isAdmin: user.isAdmin || false },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" },
+  );
+};
+
 // Register user
 const register = async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
+
+    if (!name || !email || !password) {
+      return res
+        .status(400)
+        .json({ error: "All required fields must be filled" });
+    }
 
     // Check if user exists
     const userExists = await User.findOne({ email });
@@ -24,16 +38,12 @@ const register = async (req, res) => {
     });
 
     // Create token
-    const token = jwt.sign(
-      { id: user._id, isAdmin: user.isAdmin },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" },
-    );
+    const token = generateToken(user);
 
     res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
+      id: user._id,
+      name,
+      email,
       isAdmin: user.isAdmin,
       token,
     });
@@ -50,6 +60,14 @@ const login = async (req, res) => {
     // Find user
     const user = await User.findOne({ email });
 
+    if (!user) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    if (user.isAdmin) {
+      return res.status(403).json({ error: "Use admin login" });
+    }
+
     // Hash the provided password and compare
     const hashedPassword = user.password;
     const passwordMatch = await bcrypt.compare(password, hashedPassword);
@@ -58,16 +76,12 @@ const login = async (req, res) => {
     }
 
     // Create token
-    const token = jwt.sign(
-      { id: user._id, isAdmin: user.isAdmin },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" },
-    );
+    const token = generateToken(user);
 
-    res.json({
-      _id: user._id,
+    res.status(201).json({
+      id: user._id,
       name: user.name,
-      email: user.email,
+      email,
       isAdmin: user.isAdmin,
       token,
     });
@@ -85,11 +99,13 @@ const getProfile = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 // Forgot password
 const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
     const user = await User.findOne({ email });
+
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
@@ -97,7 +113,7 @@ const forgotPassword = async (req, res) => {
     // Generate reset token
     const resetToken = crypto.randomBytes(20).toString("hex");
     user.resetPasswordToken = resetToken;
-    user.resetPasswordExpire = Date.now() + 3600000; // 1 hour
+    user.resetPasswordExpire = Date.now() + 60 * 60 * 1000; // 1 hour
     await user.save();
 
     // Send email
@@ -138,6 +154,7 @@ const resetPassword = async (req, res) => {
     user.password = password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
+
     await user.save();
 
     res.json({ message: "Password reset successful" });
@@ -146,4 +163,77 @@ const resetPassword = async (req, res) => {
   }
 };
 
-module.exports = { register, login, getProfile, forgotPassword, resetPassword };
+// for admin
+const adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const admin = await User.findOne({ email });
+    if (!admin) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    if (!admin.isAdmin) {
+      return res.status(403).json({ error: "Admin access only" });
+    }
+
+    const token = generateToken(admin);
+
+    res.json({
+      _id: admin._id,
+      email: admin.email,
+      isAdmin: true,
+      token,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Admin login failed" });
+  }
+};
+
+//   REGISTER NEW ADMIN (ONLY EXISTING ADMIN)
+const registerAdmin = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    const exists = await User.findOne({ email });
+    if (exists) {
+      return res.status(400).json({ error: "Email already registered" });
+    }
+
+    const admin = await User.create({
+      name,
+      email,
+      password,
+      isAdmin: true,
+    });
+
+    res.status(201).json({
+      message: "Admin created successfully",
+      admin: {
+        _id: admin._id,
+        email: admin.email,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Admin creation failed" });
+  }
+};
+
+module.exports = {
+  register,
+  login,
+  getProfile,
+  forgotPassword,
+  resetPassword,
+  adminLogin,
+  registerAdmin,
+};

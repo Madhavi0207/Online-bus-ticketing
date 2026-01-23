@@ -1,0 +1,95 @@
+@baseUrl = http://localhost:5000/api
+@userToken = 
+@adminToken = 
+
+############################
+### USER REGISTER
+############################
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Normal User",
+  "email": "user12@test.com",
+  "password": "User12@123",
+  "phone": "9800000000"
+}
+
+############################
+### USER LOGIN
+############################
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "user@test.com",
+  "password": "User@123"
+}
+
+# 👉 copy token from response and paste below
+# @userToken = eyJhbGciOi...
+
+############################
+### GET USER PROFILE
+############################
+GET {{baseUrl}}/auth/profile
+Authorization: Bearer {{userToken}}
+
+############################
+### ADMIN LOGIN
+############################
+POST {{baseUrl}}/admin/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@admin.com",
+  "password": "admin123"
+}
+
+# 👉 copy admin token from response and paste below
+# @adminToken = eyJhbGciOi...
+
+############################
+### CREATE NEW ADMIN (ADMIN ONLY)
+############################
+POST {{baseUrl}}/admin/auth/register
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "name": "Second Admin",
+  "email": "admin2@test.com",
+  "password": "Admin@123"
+}
+
+############################
+### ADMIN GET ALL USERS
+############################
+GET {{baseUrl}}/users
+Authorization: Bearer {{adminToken}}
+
+############################
+### ADMIN DELETE USER
+############################
+DELETE {{baseUrl}}/users/USER_ID_HERE
+Authorization: Bearer {{adminToken}}
+
+############################
+### FORGOT PASSWORD
+############################
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "user@test.com"
+}
+
+############################
+### RESET PASSWORD
+############################
+POST {{baseUrl}}/auth/reset-password/RESET_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "password": "NewUser@123"
+}
