@@ -55,6 +55,33 @@ export const AuthProvider = ({ children }) => {
       return { success: false };
     }
   };
+  const register = async (userData) => {
+    try {
+      const res = await api.post("/auth/register", userData);
+
+      // Optional: auto-login after registration
+      const newUser = {
+        id: res.data.id,
+        name: res.data.name,
+        email: res.data.email,
+        isAdmin: res.data.isAdmin || false,
+      };
+
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("user", JSON.stringify(newUser));
+        setUser(newUser);
+      }
+
+      toast.success("Account created successfully");
+      return { success: true };
+    } catch (err) {
+      toast.error(
+        err.response?.data?.error || err.response?.data?.message || err.message,
+      );
+      return { success: false };
+    }
+  };
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -69,6 +96,7 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated: !!user,
         isAdmin: user?.isAdmin || false,
         login,
+        register,
         logout,
         loading,
       }}
