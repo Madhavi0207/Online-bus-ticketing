@@ -1,95 +1,51 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
-import { toast } from "react-hot-toast";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import api from "../services/api";
+import { toast } from "react-hot-toast";
 
-export const AuthContext = createContext();
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};
+const AuthContext = createContext();
+export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState(localStorage.getItem("token"));
 
   useEffect(() => {
-    if (token) {
-      verifyToken();
-    } else {
-      setLoading(false);
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
     }
-  }, [token]);
+    setLoading(false);
+  }, []);
 
-  const verifyToken = async () => {
+  const login = async (email, password, role) => {
     try {
-      const response = await api.get("/auth/profile", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setUser(JSON.parse(JSON.stringify(response.data)));
-    } catch (error) {
-      localStorage.removeItem("token");
-      setToken(null);
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
-  };
+      const res = await api.post("/auth/login", { email, password });
+      const { user, token } = res.data;
 
-  const login = async (email, password) => {
-    try {
-      const response = await api.post("/auth/login", { email, password });
-      const { token: newToken, ...userData } = response.data;
+      // 🔐 SECURITY CHECK
+      if (role === "admin" && !user.isAdmin) {
+        throw new Error("You are not authorized as admin");
+      }
 
-      localStorage.setItem("token", newToken);
-      setToken(newToken);
-      setUser(JSON.parse(JSON.stringify(userData)));
-      toast.success("Login successful!");
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      setUser(user);
+
       return { success: true };
-    } catch (error) {
-      toast.error(error.response?.data?.error || "Login failed");
-      return { success: false, error: error.response?.data?.error };
-    }
-  };
-
-  const register = async (userData) => {
-    try {
-      const response = await api.post("/auth/register", userData);
-      const { token: newToken, ...userDataWithoutToken } = response.data;
-
-      localStorage.setItem("token", newToken);
-      setToken(newToken);
-      setUser(JSON.parse(JSON.stringify(userDataWithoutToken)));
-      toast.success("Registration successful!");
-      return { success: true };
-    } catch (error) {
-      console.error("Registration error:", error);
-      toast.error(error.response?.data?.error || "Registration failed");
-      return { success: false, error: error.response?.data?.error };
+    } catch (err) {
+      toast.error(err.response?.data?.message || err.message);
+      return { success: false };
     }
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
+    localStorage.clear();
     setUser(null);
-    toast.success("Logged out successfully");
   };
 
-  const value = {
-    user,
-    token,
-    loading,
-    login,
-    register,
-    logout,
-    isAuthenticated: !!user,
-    isAdmin: user?.isAdmin || false,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };

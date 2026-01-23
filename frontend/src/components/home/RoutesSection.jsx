@@ -72,12 +72,12 @@ const RoutesSection = () => {
                 <span>Book Now</span>
                 <ArrowRight className="h-4 w-4" />
               </Link> */}
-              <Link
+              {/* <Link
                 to={`/routes/${route._id}`}
                 className="btn-primary flex-1 text-center bg-green-600 text-white px-4 py-2 m-2 rounded-lg transition-colors hover:bg-green-700"
               >
                 View Details
-              </Link>
+              </Link> */}
             </div>
           </div>
         ))}

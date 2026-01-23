@@ -7,6 +7,7 @@ import { bookingsAPI } from "../services/api"; // Ensure this matches your expor
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import SeatSelector from "../components/booking/SeatSelector";
 import BookingForm from "../components/booking/BookingForm";
+import { useAuth } from "../context/AuthContext";
 
 const MAX_SEATS_PER_BOOKING = 6;
 
@@ -14,6 +15,8 @@ const BookingPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const busId = searchParams.get("bus");
+
+  const { user } = useAuth();
 
   const [step, setStep] = useState(2); // Start at 2 (Seat Selection)
   const [selectedBus, setSelectedBus] = useState(null);
@@ -100,8 +103,8 @@ const BookingPage = () => {
     setLoading(true);
     try {
       const payload = {
-        busId,
-        routeId: selectedBus.route?._id,
+        user: user._id,
+        route: selectedBus.route?._id,
         selectedSeats,
         travelDate,
         bookerName: bookerDetails.name,

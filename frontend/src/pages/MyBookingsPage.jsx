@@ -96,9 +96,9 @@ const MyBookingsPage = () => {
   }
 
   return (
-    <div className="section-container">
+    <div className="section-container p-10 m-10">
       <div className="text-center mb-12">
-        <h1 className="text-5xl font-bold text-gray-900 mb-4">My Bookings</h1>
+        <h1 className="text-5xl font-bold text-green-600 mb-4">My Bookings</h1>
         <p className="text-xl text-gray-600">
           Manage and track all your bus bookings
         </p>
@@ -122,7 +122,7 @@ const MyBookingsPage = () => {
           </a>
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-6 ">
           {bookings.map((booking) => (
             <div key={booking._id} className="card hover:shadow-xl">
               <div className="flex flex-col md:flex-row md:items-start justify-between">
@@ -131,7 +131,7 @@ const MyBookingsPage = () => {
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <div className="flex items-center space-x-3 mb-2">
-                        <h3 className="text-xl font-bold text-gray-900">
+                        <h3 className="text-xl font-bold text-green-600">
                           {booking.route?.from} → {booking.route?.to}
                         </h3>
                         {getStatusBadge(booking)}
@@ -156,7 +156,7 @@ const MyBookingsPage = () => {
                   </div>
 
                   {/* Passenger Details */}
-                  <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                  {/* <div className="bg-gray-50 rounded-lg p-4 mb-4">
                     <h4 className="font-semibold mb-2">Passenger Details</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                       {booking.selectedSeats.map((seat, index) => (
@@ -173,7 +173,7 @@ const MyBookingsPage = () => {
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </div> */}
 
                   {/* Booking Meta */}
                   <div className="flex flex-wrap gap-4 text-sm">
@@ -246,15 +246,22 @@ const MyBookingsPage = () => {
             </div>
             <div className="text-gray-700">Total Bookings</div>
           </div>
+
           <div className="bg-green-50 rounded-xl p-6">
             <div className="text-3xl font-bold text-green-600 mb-2">
               {bookings.filter((b) => !b.isCancelled).length}
             </div>
             <div className="text-gray-700">Active Bookings</div>
           </div>
+
           <div className="bg-blue-50 rounded-xl p-6">
             <div className="text-3xl font-bold text-blue-600 mb-2">
-              NPR {bookings.reduce((sum, b) => sum + b.totalAmount, 0)}
+              NPR{" "}
+              {bookings
+                .filter(
+                  (b) => !b.isCancelled && b.paymentStatus === "completed",
+                )
+                .reduce((sum, b) => sum + b.totalAmount, 0)}
             </div>
             <div className="text-gray-700">Total Spent</div>
           </div>

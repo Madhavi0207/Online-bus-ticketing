@@ -2,12 +2,26 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
+const bcrypt = require("bcrypt");
+const User = require("./models/User");
 
 // Load env vars
 dotenv.config();
 
 // Connect to database
 connectDB();
+const createAdmin = async () => {
+  const hashedPassword = await bcrypt.hash("admin123", 10);
+
+  await User.create({
+    name: "Madmin",
+    email: "admin@admin.com",
+    password: hashedPassword,
+    isAdmin: true,
+  });
+
+  console.log("Admin created");
+};
 
 const app = express();
 

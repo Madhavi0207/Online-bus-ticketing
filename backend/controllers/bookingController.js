@@ -7,15 +7,15 @@ const sendEmail = require("../utils/email");
 const createBooking = async (req, res) => {
   try {
     const {
-      busId,
-      routeId,
+      userId,
+      route,
       selectedSeats,
       travelDate,
       bookerName,
       bookerEmail,
       bookerPhone,
     } = req.body;
-    const userId = req.user.id;
+    // const userId = req.user.id;
 
     // 1. Validation
     if (selectedSeats.length > 6) {
@@ -40,8 +40,7 @@ const createBooking = async (req, res) => {
     // 3. Create Booking
     const booking = await Booking.create({
       user: userId,
-      bus: busId,
-      route: routeId,
+      route,
       selectedSeats,
       bookerName,
       bookerEmail,

@@ -14,7 +14,9 @@ const Navbar = () => {
     { name: "Services", path: "/services" },
     { name: "Routes", path: "/routes" },
     ...(isAuthenticated ? [{ name: "My Bookings", path: "/my-bookings" }] : []),
-    ...(user?.isAdmin ? [{ name: "Admin Panel", path: "/admin" }] : []),
+    ...(user?.isAdmin
+      ? [{ name: "Admin Panel", path: "/admin/dashboard" }]
+      : []),
   ];
 
   return (

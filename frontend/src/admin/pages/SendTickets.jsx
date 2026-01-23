@@ -67,8 +67,8 @@ const SendTickets = () => {
         bookings.map((booking) =>
           selectedBookings.includes(booking._id)
             ? { ...booking, ticketSent: true }
-            : booking
-        )
+            : booking,
+        ),
       );
     } catch (error) {
       toast.error("Failed to send tickets");
@@ -83,7 +83,7 @@ const SendTickets = () => {
 
   const handleExportSelected = () => {
     const selectedData = bookings.filter((b) =>
-      selectedBookings.includes(b._id)
+      selectedBookings.includes(b._id),
     );
     // Implement export
     toast.success(`Exported ${selectedData.length} bookings`);
@@ -102,7 +102,7 @@ const SendTickets = () => {
               setSelectedBookings([...selectedBookings, item._id]);
             } else {
               setSelectedBookings(
-                selectedBookings.filter((id) => id !== item._id)
+                selectedBookings.filter((id) => id !== item._id),
               );
             }
           }}
