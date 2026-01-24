@@ -94,51 +94,42 @@ const BookingPage = () => {
       toast.error("Please fill in all booker details.");
       return;
     }
-
-    if (!travelDate) {
-      toast.error("Please select a travel date.");
-      return;
-    }
-
-    if (selectedSeats.length === 0) {
-      toast.error("Please select at least one seat.");
-      return;
-    }
-
     if (!bookerDetails.paymentMethod) {
       toast.error("Please select a payment method.");
       return;
     }
 
     setLoading(true);
-
     try {
       const payload = {
-        userId: user._id,
-        busId: selectedBus._id,
         route: selectedBus.route?._id,
+        busId: selectedBus._id,
         selectedSeats,
         travelDate,
         bookerName: bookerDetails.name,
         bookerEmail: bookerDetails.email,
         bookerPhone: bookerDetails.phone,
-        paymentMethod: bookerDetails.paymentMethod,
         totalAmount,
       };
 
-      const res = await bookingsAPI.create(payload);
+      // 1️⃣ Create booking
+      await bookingsAPI.create(payload);
+
+      // 2️⃣ Fetch updated bus info to refresh seat states
+      const res = await busesAPI.getById(selectedBus._id);
+      setSelectedBus(res.data);
+
+      // 3️⃣ Clear selected seats
+      setSelectedSeats([]);
 
       toast.success(
         bookerDetails.paymentMethod === "cash"
           ? "Booking reserved! Pay when you board."
           : "Booking confirmed successfully!",
       );
-
       navigate("/my-bookings");
     } catch (err) {
-      const errorMsg = err.response?.data?.error || "Booking failed.";
-      toast.error(errorMsg);
-      console.error("Booking Error:", err);
+      toast.error(err.response?.data?.error || "Booking failed.");
     } finally {
       setLoading(false);
     }

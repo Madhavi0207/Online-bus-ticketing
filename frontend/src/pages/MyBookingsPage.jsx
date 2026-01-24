@@ -10,7 +10,6 @@ import {
   Clock,
   XCircle,
   CheckCircle,
-  AlertCircle,
 } from "lucide-react";
 import { bookingsAPI } from "../services/api";
 import { useAuth } from "../context/AuthContext";
@@ -26,7 +25,9 @@ const MyBookingsPage = () => {
     fetchBookings();
   }, []);
 
+  // Fetch user's bookings
   const fetchBookings = async () => {
+    setLoading(true);
     try {
       const response = await bookingsAPI.getUserBookings();
       setBookings(response.data);
@@ -38,20 +39,43 @@ const MyBookingsPage = () => {
     }
   };
 
+  // Cancel booking
+  // Cancel booking
   const handleCancelBooking = async (bookingId) => {
-    if (!window.confirm("Are you sure you want to cancel this booking?")) {
+    if (!window.confirm("Are you sure you want to cancel this booking?"))
       return;
-    }
 
     try {
-      await bookingsAPI.cancel(bookingId);
-      toast.success("Booking cancelled successfully");
-      fetchBookings(); // Refresh list
+      // Call backend to cancel
+      const response = await bookingsAPI.cancel(bookingId);
+
+      // ✅ Show success toast
+      toast.success(response.data?.message || "Booking cancelled successfully");
+
+      // ✅ Update local state immediately so UI reflects cancellation
+      setBookings((prev) =>
+        prev.map((b) =>
+          b._id === bookingId ? { ...b, isCancelled: true } : b,
+        ),
+      );
     } catch (error) {
-      toast.error(error.response?.data?.error || "Failed to cancel booking");
+      console.error("Cancel booking error:", error);
+
+      // ✅ Handle different possible errors
+      if (error.response) {
+        // Backend responded with status code outside 2xx
+        toast.error(error.response.data?.error || "Failed to cancel booking");
+      } else if (error.request) {
+        // No response received
+        toast.error("No response from server. Please check your connection.");
+      } else {
+        // Other errors
+        toast.error(error.message || "Failed to cancel booking");
+      }
     }
   };
 
+  // Send ticket via email
   const handleSendTicket = async (bookingId) => {
     try {
       await bookingsAPI.sendTicket(bookingId);
@@ -61,6 +85,7 @@ const MyBookingsPage = () => {
     }
   };
 
+  // Badge for booking status
   const getStatusBadge = (booking) => {
     if (booking.isCancelled) {
       return (
@@ -91,12 +116,11 @@ const MyBookingsPage = () => {
     );
   };
 
-  if (loading) {
-    return <LoadingSpinner />;
-  }
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className="section-container p-10 m-10">
+      {/* Header */}
       <div className="text-center mb-12">
         <h1 className="text-5xl font-bold text-green-600 mb-4">My Bookings</h1>
         <p className="text-xl text-gray-600">
@@ -104,6 +128,7 @@ const MyBookingsPage = () => {
         </p>
       </div>
 
+      {/* No bookings */}
       {bookings.length === 0 ? (
         <div className="text-center py-16">
           <Calendar className="h-16 w-16 text-gray-400 mx-auto mb-4" />
@@ -122,7 +147,7 @@ const MyBookingsPage = () => {
           </a>
         </div>
       ) : (
-        <div className="space-y-6 ">
+        <div className="space-y-6">
           {bookings.map((booking) => (
             <div key={booking._id} className="card hover:shadow-xl">
               <div className="flex flex-col md:flex-row md:items-start justify-between">
@@ -185,6 +210,7 @@ const MyBookingsPage = () => {
                     </div>
                   </div>
 
+                  {/* Buttons */}
                   <div className="flex flex-col space-y-2">
                     {!booking.isCancelled &&
                       new Date(booking.travelDate) > new Date() && (
@@ -196,6 +222,7 @@ const MyBookingsPage = () => {
                             <Mail className="h-4 w-4" />
                             <span>Send Ticket</span>
                           </button>
+
                           <button
                             onClick={() => handleCancelBooking(booking._id)}
                             className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 flex items-center justify-center space-x-2"
@@ -205,6 +232,7 @@ const MyBookingsPage = () => {
                           </button>
                         </>
                       )}
+
                     <button className="btn-primary flex items-center justify-center space-x-2">
                       <Download className="h-4 w-4" />
                       <span>Download PDF</span>
