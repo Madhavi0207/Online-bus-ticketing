@@ -11,7 +11,7 @@ const SeatSelector = ({
   const totalRows = Math.ceil(totalSeats / seatsPerRow);
 
   const handleSeatClick = (seatNumber) => {
-    if (bookedSeats.includes(seatNumber)) return;
+    if (bookedSeats.includes(seatNumber)) return; // cannot select booked seats
     onSelectSeat(seatNumber);
   };
 
@@ -26,7 +26,7 @@ const SeatSelector = ({
       seatClass += "bg-red-100 text-red-400 cursor-not-allowed"; // Booked
     } else if (isSelected) {
       seatClass +=
-        "bg-blue-600 text-white ring-2 ring-blue-300 transform scale-105"; // Selected matches legend
+        "bg-blue-600 text-white ring-2 ring-blue-300 transform scale-105"; // Selected
     } else {
       seatClass +=
         "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-105"; // Available

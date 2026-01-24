@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { Calendar } from "lucide-react";
 import busesAPI from "../services/busesAPI";
-import { bookingsAPI } from "../services/api"; // Ensure this matches your export name
+import { bookingsAPI } from "../services/api";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import SeatSelector from "../components/booking/SeatSelector";
 import BookingForm from "../components/booking/BookingForm";
@@ -25,12 +25,11 @@ const BookingPage = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  // Single booker details state
   const [bookerDetails, setBookerDetails] = useState({
     name: "",
     email: "",
     phone: "",
-    paymentMethod: "", // Empty initially so user must choose
+    paymentMethod: "",
   });
 
   useEffect(() => {
@@ -95,15 +94,28 @@ const BookingPage = () => {
       toast.error("Please fill in all booker details.");
       return;
     }
+
+    if (!travelDate) {
+      toast.error("Please select a travel date.");
+      return;
+    }
+
+    if (selectedSeats.length === 0) {
+      toast.error("Please select at least one seat.");
+      return;
+    }
+
     if (!bookerDetails.paymentMethod) {
       toast.error("Please select a payment method.");
       return;
     }
 
     setLoading(true);
+
     try {
       const payload = {
-        user: user._id,
+        userId: user._id,
+        busId: selectedBus._id,
         route: selectedBus.route?._id,
         selectedSeats,
         travelDate,
@@ -114,16 +126,19 @@ const BookingPage = () => {
         totalAmount,
       };
 
-      await bookingsAPI.create(payload);
+      const res = await bookingsAPI.create(payload);
 
       toast.success(
         bookerDetails.paymentMethod === "cash"
           ? "Booking reserved! Pay when you board."
           : "Booking confirmed successfully!",
       );
+
       navigate("/my-bookings");
     } catch (err) {
-      toast.error(err.response?.data?.error || "Booking failed.");
+      const errorMsg = err.response?.data?.error || "Booking failed.";
+      toast.error(errorMsg);
+      console.error("Booking Error:", err);
     } finally {
       setLoading(false);
     }
@@ -132,8 +147,9 @@ const BookingPage = () => {
   if (loading || !selectedBus) return <LoadingSpinner />;
 
   const bookedSeats =
-    selectedBus.seats?.filter((seat) => seat.isBooked).map((seat) => seat) ||
-    [];
+    selectedBus.seats
+      ?.filter((seat) => seat.isBooked)
+      .map((seat) => seat.seatNumber) || [];
 
   return (
     <div className="section-container max-w-4xl mx-auto px-4 py-8">
@@ -158,7 +174,9 @@ const BookingPage = () => {
                 <span className="leading-none">{index + 1}</span>
               </div>
               <span
-                className={`text-xs mt-2 font-semibold uppercase ${isActive ? "text-primary-600" : "text-gray-400"}`}
+                className={`text-xs mt-2 font-semibold uppercase ${
+                  isActive ? "text-primary-600" : "text-gray-400"
+                }`}
               >
                 {title}
               </span>

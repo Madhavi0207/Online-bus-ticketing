@@ -7,7 +7,6 @@ const sendEmail = require("../utils/email");
 const createBooking = async (req, res) => {
   try {
     const {
-      userId,
       busId,
       route,
       selectedSeats,
@@ -28,16 +27,21 @@ const createBooking = async (req, res) => {
     const bus = await Bus.findById(busId);
     if (!bus) return res.status(404).json({ error: "Bus not found" });
 
-    // Check if seats are already booked
-    const alreadyBooked = bus.seats.filter(
-      (s) => selectedSeats.includes(s.seatNumber) && s.isBooked,
+    // Convert seatNumber to number to avoid type mismatch
+    const bookedSeats = bus.seats
+      .filter((s) => s.isBooked)
+      .map((s) => Number(s.seatNumber));
+    const alreadyBooked = selectedSeats.filter((s) =>
+      bookedSeats.includes(Number(s)),
     );
     if (alreadyBooked.length > 0)
       return res
         .status(400)
-        .json({ error: "One or more seats are already booked" });
+        .json({ error: `Seats already booked: ${alreadyBooked.join(", ")}` });
 
-    // Create booking
+    // Use logged-in user ID instead of userId from body
+    const userId = req.user.id;
+
     const booking = await Booking.create({
       user: userId,
       bus: busId,
@@ -51,7 +55,7 @@ const createBooking = async (req, res) => {
       paymentStatus: "completed",
     });
 
-    // Mark seats as booked in bus
+    // Mark seats as booked
     await Bus.updateOne(
       { _id: busId },
       {
@@ -61,7 +65,11 @@ const createBooking = async (req, res) => {
           "seats.$[elem].bookingId": booking._id,
         },
       },
-      { arrayFilters: [{ "elem.seatNumber": { $in: selectedSeats } }] },
+      {
+        arrayFilters: [
+          { "elem.seatNumber": { $in: selectedSeats.map(String) } },
+        ],
+      }, // ensure string match
     );
 
     // Generate ticket
