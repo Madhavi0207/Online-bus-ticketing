@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const bcrypt = require("bcrypt");
 const User = require("./models/User");
+const Booking = require("./models/Booking");
 
 // Load env vars
 dotenv.config();
@@ -44,7 +45,8 @@ app.use("/api/buses", require("./routes/busesRoutes"));
 // Admin routes
 app.use("/api/admin/auth", require("./routes/auth.admin.routes"));
 app.use("/api/admin", require("./routes/admin.routes"));
-
+// Admin service routes
+app.use("/api/admin/services", require("./routes/serviceRoutes"));
 // Default route
 const PORT = process.env.PORT || 5000;
 

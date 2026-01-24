@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { User, UserCheck, X } from "lucide-react";
+import React from "react";
+import { UserCheck } from "lucide-react";
 
 const SeatSelector = ({
   totalSeats = 40,
   bookedSeats = [],
-  selectedSeats,
+  selectedSeats = [],
   onSelectSeat,
 }) => {
   const seatsPerRow = 4;
@@ -23,12 +23,13 @@ const SeatSelector = ({
       "w-12 h-12 rounded-lg flex items-center justify-center font-semibold cursor-pointer transition-all duration-200 ";
 
     if (isBooked) {
-      seatClass += "bg-red-100 text-red-400 cursor-not-allowed";
+      seatClass += "bg-red-100 text-red-400 cursor-not-allowed"; // Booked
     } else if (isSelected) {
-      seatClass += "bg-primary-600 text-white transform scale-105";
+      seatClass +=
+        "bg-blue-600 text-white ring-2 ring-blue-300 transform scale-105"; // Selected matches legend
     } else {
       seatClass +=
-        "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-105";
+        "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-105"; // Available
     }
 
     return (
@@ -38,7 +39,7 @@ const SeatSelector = ({
         disabled={isBooked}
         className={seatClass}
       >
-        {isSelected ? <UserCheck className="h-5 w-5 text-black" /> : seatNumber}
+        {isSelected ? <UserCheck className="h-5 w-5 text-white" /> : seatNumber}
       </button>
     );
   };
@@ -72,7 +73,9 @@ const SeatSelector = ({
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="w-5 h-5 rounded bg-blue-600 ring-2 ring-blue-300"></span>
+          <span className="w-5 h-5 rounded bg-blue-600 ring-2 ring-blue-300 flex items-center justify-center text-white">
+            <UserCheck className="h-3 w-3" />
+          </span>
           <span className="text-gray-600">Selected</span>
         </div>
 
@@ -91,42 +94,6 @@ const SeatSelector = ({
 
         {renderSeatLayout()}
       </div>
-
-      {/* Selection Summary */}
-      {/* {selectedSeats.length > 0 && (
-        <div className="bg-primary-50 rounded-xl p-4 bottom-4 shadow-lg">
-          <div className="flex justify-between items-center">
-            <div>
-              <div className="font-semibold text-gray-900">
-                {selectedSeats.length} seat
-                {selectedSeats.length !== 1 ? "s" : ""} selected
-              </div>
-              <div className="text-sm text-gray-600">
-                Seats: {selectedSeats.join(", ")}
-              </div>
-            </div>
-            <div className="text-lg font-bold text-primary-600">
-              Total Seats: {selectedSeats.length}
-            </div>
-          </div>
-        </div>
-      )} */}
-      {/* <div className="bg-primary-50 rounded-xl p-4">
-        <div className="flex justify-between items-center">
-          <div>
-            <div className="font-semibold text-gray-900">
-              {selectedSeats.length} seat{selectedSeats.length !== 1 ? "s" : ""}{" "}
-              selected
-            </div>
-            <div className="text-sm text-gray-600">
-              Seats: {selectedSeats.join(", ")}
-            </div>
-          </div>
-          <div className="text-lg font-bold">
-            Total Seats: {selectedSeats.length}
-          </div>
-        </div>
-      </div> */}
     </div>
   );
 };

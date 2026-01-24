@@ -1,13 +1,14 @@
 const Booking = require("../models/Booking");
-const Route = require("../models/route.model.js");
 const Bus = require("../models/bus.model");
-const Ticket = require("../models/ticket.model.js");
+const Ticket = require("../models/ticket.model");
 const sendEmail = require("../utils/email");
 
+// ===== Create Booking =====
 const createBooking = async (req, res) => {
   try {
     const {
       userId,
+      busId,
       route,
       selectedSeats,
       travelDate,
@@ -15,31 +16,31 @@ const createBooking = async (req, res) => {
       bookerEmail,
       bookerPhone,
     } = req.body;
-    // const userId = req.user.id;
 
-    // 1. Validation
-    if (selectedSeats.length > 6) {
+    if (!busId || !selectedSeats || selectedSeats.length === 0)
+      return res.status(400).json({ error: "Invalid booking data" });
+
+    if (selectedSeats.length > 6)
       return res
         .status(400)
         .json({ error: "Maximum 6 seats allowed per booking" });
-    }
 
     const bus = await Bus.findById(busId);
     if (!bus) return res.status(404).json({ error: "Bus not found" });
 
-    // 2. Check if seats are already taken
+    // Check if seats are already booked
     const alreadyBooked = bus.seats.filter(
       (s) => selectedSeats.includes(s.seatNumber) && s.isBooked,
     );
-    if (alreadyBooked.length > 0) {
+    if (alreadyBooked.length > 0)
       return res
         .status(400)
         .json({ error: "One or more seats are already booked" });
-    }
 
-    // 3. Create Booking
+    // Create booking
     const booking = await Booking.create({
       user: userId,
+      bus: busId,
       route,
       selectedSeats,
       bookerName,
@@ -50,7 +51,7 @@ const createBooking = async (req, res) => {
       paymentStatus: "completed",
     });
 
-    // 4. Update Bus Model (Mark seats as booked)
+    // Mark seats as booked in bus
     await Bus.updateOne(
       { _id: busId },
       {
@@ -63,7 +64,7 @@ const createBooking = async (req, res) => {
       { arrayFilters: [{ "elem.seatNumber": { $in: selectedSeats } }] },
     );
 
-    // 5. Generate Ticket
+    // Generate ticket
     const ticketNumber =
       "TIX-" + Math.random().toString(36).substr(2, 9).toUpperCase();
     await Ticket.create({
@@ -72,42 +73,43 @@ const createBooking = async (req, res) => {
       qrCode: `QR_${ticketNumber}`,
     });
 
-    // 6. Send Email
-    // const emailHtml = `<h1>Booking Confirmed</h1><p>Ticket No: ${ticketNumber}</p><p>Seats: ${selectedSeats.join(", ")}</p>`;
-    // await sendEmail({
-    //   to: bookerEmail,
-    //   subject: "Your Bus Ticket",
-    //   html: emailHtml,
-    // });
-
     res.status(201).json(booking);
   } catch (error) {
+    console.error("Create Booking Error:", error);
     res.status(500).json({ error: error.message });
   }
 };
 
+// ===== Get All Bookings (Admin) =====
+const getAllBookings = async (req, res) => {
+  try {
+    const bookings = await Booking.find()
+      .populate("user", "name email phone")
+      .populate("route")
+      .populate("bus")
+      .sort({ createdAt: -1 });
+    res.json(bookings);
+  } catch (error) {
+    console.error("Get All Bookings Error:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// ===== Get User Bookings =====
 const getUserBookings = async (req, res) => {
   try {
     const bookings = await Booking.find({ user: req.user.id })
       .populate("route")
-      .sort("-bookingDate");
+      .populate("bus")
+      .sort({ createdAt: -1 });
     res.json(bookings);
   } catch (error) {
+    console.error("Get User Bookings Error:", error);
     res.status(500).json({ error: error.message });
   }
 };
 
-const getAllBookings = async (req, res) => {
-  try {
-    const bookings = await Booking.find()
-      .populate("route")
-      .populate("user", "name email");
-    res.json(bookings);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
+// ===== Cancel Booking =====
 const cancelBooking = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id);
@@ -116,7 +118,7 @@ const cancelBooking = async (req, res) => {
     booking.isCancelled = true;
     await booking.save();
 
-    // Release seats in Bus model
+    // Release seats in Bus
     await Bus.updateOne(
       { _id: booking.bus },
       {
@@ -129,22 +131,38 @@ const cancelBooking = async (req, res) => {
       { arrayFilters: [{ "elem.seatNumber": { $in: booking.selectedSeats } }] },
     );
 
-    res.json({ message: "Cancelled successfully" });
+    res.json({ message: "Booking cancelled successfully" });
   } catch (error) {
+    console.error("Cancel Booking Error:", error);
     res.status(500).json({ error: error.message });
   }
 };
 
-// Placeholder for manual re-send if needed
+// ===== Send Ticket (Manual / Placeholder) =====
 const sendTicket = async (req, res) => {
-  res.json({ message: "Feature coming soon" });
+  try {
+    const booking = await Booking.findById(req.params.id)
+      .populate("user")
+      .populate("route")
+      .populate("bus");
+
+    if (!booking) return res.status(404).json({ error: "Booking not found" });
+
+    // TODO: implement actual email sending
+    // await sendEmail({ to: booking.bookerEmail, subject: "Your Ticket", html: "<p>Ticket</p>" });
+
+    res.json({ message: "Ticket sent successfully (placeholder)" });
+  } catch (error) {
+    console.error("Send Ticket Error:", error);
+    res.status(500).json({ error: error.message });
+  }
 };
 
-// EXPORTS - THIS MUST MATCH YOUR ROUTE IMPORTS EXACTLY
+// ===== Export all functions =====
 module.exports = {
   createBooking,
-  getUserBookings,
   getAllBookings,
+  getUserBookings,
   cancelBooking,
   sendTicket,
 };

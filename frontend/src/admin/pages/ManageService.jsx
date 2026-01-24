@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
-import {
-  Plus,
-  Edit,
-  Trash2,
-  Eye,
-  Filter,
-  Download,
-  GripVertical,
-} from "lucide-react";
+import { Plus, Edit, Trash2, GripVertical } from "lucide-react";
 import DataTable from "../components/DataTable";
 import Modal, { ConfirmationModal } from "../components/Modal";
 import { adminServicesAPI } from "../services/adminApi";
@@ -33,7 +25,6 @@ const ManageServices = () => {
       setServices(response.data);
     } catch (error) {
       toast.error("Failed to load services");
-      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -72,7 +63,7 @@ const ManageServices = () => {
         toast.success("Service updated successfully");
       } else {
         await adminServicesAPI.createService(serviceData);
-        toast.success("Service created successfully");
+        toast.success("Service added successfully");
       }
       setShowModal(false);
       fetchServices();
@@ -81,37 +72,22 @@ const ManageServices = () => {
     }
   };
 
-  const handleDragStart = (index) => {
-    setDragIndex(index);
-  };
-
-  const handleDragOver = (e, index) => {
-    e.preventDefault();
-  };
-
+  const handleDragStart = (index) => setDragIndex(index);
+  const handleDragOver = (e) => e.preventDefault();
   const handleDrop = async (dropIndex) => {
     if (dragIndex === null || dragIndex === dropIndex) return;
-
     const newServices = [...services];
-    const [draggedItem] = newServices.splice(dragIndex, 1);
-    newServices.splice(dropIndex, 0, draggedItem);
-
-    // Update order numbers
-    const updatedServices = newServices.map((service, index) => ({
-      ...service,
-      order: index,
-    }));
-
+    const [dragged] = newServices.splice(dragIndex, 1);
+    newServices.splice(dropIndex, 0, dragged);
+    const updatedServices = newServices.map((s, i) => ({ ...s, order: i }));
     setServices(updatedServices);
-
     try {
       await adminServicesAPI.updateServiceOrder(updatedServices);
       toast.success("Services order updated");
-    } catch (error) {
+    } catch (err) {
       toast.error("Failed to update order");
-      fetchServices(); // Revert on error
+      fetchServices();
     }
-
     setDragIndex(null);
   };
 
@@ -119,11 +95,11 @@ const ManageServices = () => {
     {
       key: "order",
       title: "Order",
-      render: (item, column, index) => (
+      render: (item, _, index) => (
         <div
           draggable
           onDragStart={() => handleDragStart(index)}
-          onDragOver={(e) => handleDragOver(e, index)}
+          onDragOver={handleDragOver}
           onDrop={() => handleDrop(index)}
           className="flex items-center justify-center cursor-move p-2"
         >
@@ -154,11 +130,7 @@ const ManageServices = () => {
       title: "Status",
       render: (item) => (
         <span
-          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-            item.isActive
-              ? "bg-green-100 text-green-800"
-              : "bg-gray-100 text-gray-800"
-          }`}
+          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${item.isActive ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}`}
         >
           {item.isActive ? "Active" : "Inactive"}
         </span>
@@ -173,13 +145,13 @@ const ManageServices = () => {
             onClick={() => handleEditService(item)}
             className="text-blue-600 hover:text-blue-900"
           >
-            <Edit className="h-4 w-4" />
+            Edit
           </button>
           <button
             onClick={() => handleDeleteService(item)}
             className="text-red-600 hover:text-red-900"
           >
-            <Trash2 className="h-4 w-4" />
+            Delete
           </button>
         </div>
       ),
@@ -198,46 +170,45 @@ const ManageServices = () => {
         </div>
         <button
           onClick={handleCreateService}
-          className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center space-x-2 mt-4 md:mt-0"
+          className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center space-x-2 mt-4 md:mt-0 bg-green-600"
         >
           <Plus className="h-4 w-4" />
           <span>Add New Service</span>
         </button>
       </div>
 
-      {/* Services Table */}
+      {/* Table */}
       <DataTable
         columns={columns}
         data={services}
         loading={loading}
         pagination={false}
-        searchable={true}
-        selectable={false}
         emptyMessage="No services found. Add your first service!"
       />
 
-      {/* Create/Edit Service Modal */}
+      {/* Modal */}
       <Modal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
-        title={selectedService ? "Edit Service" : "Create New Service"}
+        title={selectedService ? "Edit Service" : "Add New Service"}
         size="md"
       >
         <ServiceForm
+          key={selectedService?._id || "new"}
           service={selectedService}
           onSubmit={handleSaveService}
           onCancel={() => setShowModal(false)}
         />
       </Modal>
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete Confirmation */}
       <ConfirmationModal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={confirmDelete}
         title="Delete Service"
-        message={`Are you sure you want to delete the service "${selectedService?.title}"? This action cannot be undone.`}
-        confirmText="Delete Service"
+        message={`Are you sure you want to delete "${selectedService?.title}"?`}
+        confirmText="Delete"
         cancelText="Cancel"
         danger={true}
       />

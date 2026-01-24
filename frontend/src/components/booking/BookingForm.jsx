@@ -1,12 +1,4 @@
-import {
-  CreditCard,
-  User,
-  Mail,
-  MapPin,
-  Calendar,
-  CheckCircle,
-  Phone,
-} from "lucide-react";
+import { CreditCard, User, CheckCircle } from "lucide-react";
 
 const BookingForm = ({
   bus,
@@ -19,7 +11,7 @@ const BookingForm = ({
   isProcessing,
 }) => {
   return (
-    <div className="grid md:grid-cols-2 gap-8">
+    <div className="grid md:grid-cols-2 gap-8 mt-6">
       {/* Booker Info & Payment */}
       <div className="space-y-6">
         <div>
@@ -62,7 +54,11 @@ const BookingForm = ({
             {["esewa", "khalti", "card", "cash"].map((method) => (
               <label
                 key={method}
-                className={`p-3 border rounded-xl cursor-pointer transition-all flex items-center justify-between ${bookerDetails.paymentMethod === method ? "border-primary-600 bg-primary-50" : "border-gray-200"}`}
+                className={`p-3 border rounded-xl cursor-pointer transition-all flex items-center justify-between ${
+                  bookerDetails.paymentMethod === method
+                    ? "border-primary-600 bg-primary-50"
+                    : "border-gray-200"
+                }`}
               >
                 <input
                   type="radio"
@@ -89,7 +85,7 @@ const BookingForm = ({
         <div className="space-y-2 text-sm text-gray-600">
           <p className="flex justify-between">
             <span>Bus:</span>{" "}
-            <span className="text-gray-900">{bus.busName}</span>
+            <span className="text-gray-900">{bus.busNumber}</span>
           </p>
           <p className="flex justify-between">
             <span>Seats:</span>{" "}

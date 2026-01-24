@@ -28,21 +28,18 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password, role) => {
     try {
-      const res = await api.post("/auth/login", { email, password });
+      // Use correct endpoint based on role
+      const endpoint = role === "admin" ? "/admin/auth/login" : "/auth/login";
+      const res = await api.post(endpoint, { email, password });
 
-      // Correctly create user object from backend response
       const loggedInUser = {
-        id: res.data.id,
+        id: res.data._id || res.data.id,
         name: res.data.name,
         email: res.data.email,
         isAdmin: res.data.isAdmin,
       };
+
       const token = res.data.token;
-
-      if (role === "admin" && !loggedInUser.isAdmin) {
-        throw new Error("You are not authorized as admin");
-      }
-
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(loggedInUser));
       setUser(loggedInUser);
@@ -55,6 +52,7 @@ export const AuthProvider = ({ children }) => {
       return { success: false };
     }
   };
+
   const register = async (userData) => {
     try {
       const res = await api.post("/auth/register", userData);

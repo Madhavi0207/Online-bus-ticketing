@@ -1,18 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
-import {
-  TrendingUp,
-  Users,
-  Ticket,
-  Bus,
-  Calendar,
-  RefreshCw,
-  Download,
-  BarChart3,
-} from "lucide-react";
+import { RefreshCw, Download } from "lucide-react";
 import DashboardStats from "../components/DashboardStats";
 import DataTable from "../components/DataTable";
-import { adminStatsAPI, adminAnalyticsAPI } from "../services/adminApi";
+import { adminStatsAPI } from "../services/adminApi";
 import { format } from "date-fns";
 
 const Dashboard = () => {
@@ -28,48 +19,16 @@ const Dashboard = () => {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      const [statsRes, bookingsRes] = await Promise.all([
-        adminStatsAPI.getDashboardStats(),
-        adminStatsAPI.getRecentBookings(),
-        adminAnalyticsAPI.getBookingAnalytics(
-          format(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), "yyyy-MM-dd"),
-          format(new Date(), "yyyy-MM-dd"),
-        ),
-      ]);
+      // Fetch dashboard stats and recent bookings safely
+      const statsRes = await adminStatsAPI.getDashboardStats();
+      const bookingsRes = await adminStatsAPI.getRecentBookings(5);
 
-      setStats(statsRes.data);
-      setRecentBookings(bookingsRes.data);
-
-      // 🔹 TEMP MOCK CHART DATA (safe to remove later)
-      setStats((prev) => ({
-        ...prev,
-        revenue: {
-          total: 4589200,
-          change: 12.5,
-          chart: [30, 45, 60, 75, 80, 65, 90, 85, 70, 80, 85, 95],
-        },
-        bookings: {
-          total: 1245,
-          change: 8.2,
-          chart: [40, 35, 50, 45, 60, 55, 70, 65, 80, 75, 85, 90],
-        },
-        users: {
-          total: 856,
-          change: 15.3,
-          chart: [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75],
-        },
-        routes: {
-          total: 24,
-          change: 5.6,
-          chart: [60, 55, 65, 60, 70, 65, 75, 70, 80, 75, 85, 80],
-        },
-        todayBookings: 42,
-        todayChange: 3.2,
-        occupancyRate: 78.5,
-        occupancyChange: 2.1,
-      }));
+      setStats(statsRes?.data || {});
+      setRecentBookings(bookingsRes?.data || []);
     } catch (err) {
-      console.error(err);
+      console.error("Failed to load dashboard data:", err);
+      setStats({});
+      setRecentBookings([]);
       toast.error("Failed to load dashboard data");
     } finally {
       setLoading(false);
@@ -94,33 +53,22 @@ const Dashboard = () => {
       ),
     },
     {
-      key: "user",
+      key: "customer",
       title: "Customer",
-      render: (item) => (
-        <div>
-          <div className="font-medium">{item.user?.name}</div>
-          <div className="text-sm text-gray-500">{item.user?.email}</div>
-        </div>
-      ),
+      render: (item) => <div>{item.customerName || "N/A"}</div>,
     },
     {
       key: "route",
       title: "Route",
-      render: (item) => (
-        <div>
-          <div className="font-medium">
-            {item.route?.from} → {item.route?.to}
-          </div>
-          <div className="text-sm text-gray-500">
-            {item.route?.departureTime}
-          </div>
-        </div>
-      ),
+      render: (item) => <div>{item.routeName || "N/A"}</div>,
     },
     {
       key: "date",
       title: "Travel Date",
-      render: (item) => format(new Date(item.travelDate), "MMM dd, yyyy"),
+      render: (item) =>
+        item.travelDate
+          ? format(new Date(item.travelDate), "MMM dd, yyyy")
+          : "N/A",
     },
     {
       key: "amount",
@@ -132,13 +80,6 @@ const Dashboard = () => {
       title: "Status",
       type: "status",
     },
-  ];
-
-  const quickActions = [
-    { title: "Add New Route", icon: Bus, path: "/admin/manage-routes" },
-    { title: "Send Tickets", icon: Ticket, path: "/admin/send-tickets" },
-    { title: "View Reports", icon: BarChart3, path: "/admin/analytics" },
-    { title: "Manage Users", icon: Users, path: "/admin/manage-users" },
   ];
 
   return (
@@ -174,29 +115,12 @@ const Dashboard = () => {
       {/* Stats */}
       <DashboardStats stats={stats} loading={loading} />
 
-      {/* Quick Actions */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {quickActions.map((action, i) => {
-          const Icon = action.icon;
-          return (
-            <a
-              key={i}
-              href={action.path}
-              className="border rounded-xl p-4 hover:shadow"
-            >
-              <Icon className="mb-2" />
-              <div className="font-medium">{action.title}</div>
-            </a>
-          );
-        })}
-      </div>
-
       {/* Recent Bookings */}
       <div className="bg-white border rounded-xl p-6">
         <h2 className="text-xl font-semibold mb-4">Recent Bookings</h2>
         <DataTable
           columns={bookingColumns}
-          data={recentBookings.slice(0, 5)}
+          data={recentBookings}
           loading={loading}
           pagination={false}
         />
