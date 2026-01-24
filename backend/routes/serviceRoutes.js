@@ -9,7 +9,7 @@ const {
 const { auth, adminAuth } = require("../middleware/auth");
 
 // Get all services (admin can also see all)
-router.get("/", auth, adminAuth, getServices);
+router.get("/", auth, getServices);
 
 // CRUD routes
 router.post("/", auth, adminAuth, createService);
