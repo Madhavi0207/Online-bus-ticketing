@@ -15,7 +15,7 @@ const DashboardStats = ({ stats, loading }) => {
   const statCards = [
     {
       title: "Total Revenue",
-      value: `NPR ${stats?.revenue?.total?.toLocaleString() || "0"}`,
+      value: `NPR ${stats?.totalRevenue}`,
       change: stats?.revenue?.change || 0,
       icon: DollarSign,
       color: "green",
@@ -23,7 +23,7 @@ const DashboardStats = ({ stats, loading }) => {
     },
     {
       title: "Total Bookings",
-      value: stats?.bookings?.total?.toLocaleString() || "0",
+      value: stats?.totalBookings,
       change: stats?.bookings?.change || 0,
       icon: Ticket,
       color: "blue",
@@ -31,7 +31,7 @@ const DashboardStats = ({ stats, loading }) => {
     },
     {
       title: "Active Users",
-      value: stats?.users?.total?.toLocaleString() || "0",
+      value: stats?.totalUsers,
       change: stats?.users?.change || 0,
       icon: Users,
       color: "purple",
@@ -39,7 +39,7 @@ const DashboardStats = ({ stats, loading }) => {
     },
     {
       title: "Active Routes",
-      value: stats?.routes?.total?.toLocaleString() || "0",
+      value: stats?.totalRoutes,
       change: stats?.routes?.change || 0,
       icon: Bus,
       color: "orange",
@@ -99,7 +99,7 @@ const DashboardStats = ({ stats, loading }) => {
           <div
             key={index}
             className={`border rounded-xl p-4 transition-all hover:shadow-lg ${getColorClasses(
-              stat.color
+              stat.color,
             )}`}
           >
             <div className="flex items-center justify-between mb-4">

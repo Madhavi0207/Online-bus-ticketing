@@ -7,7 +7,12 @@ import { adminStatsAPI } from "../services/adminApi";
 import { format } from "date-fns";
 
 const Dashboard = () => {
-  const [stats, setStats] = useState(null);
+  const [stats, setStats] = useState({
+    totalBookings: 0,
+    totalRevenue: 0,
+    totalRoutes: 0,
+    totalUsers: 0,
+  });
   const [recentBookings, setRecentBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState("week");
@@ -19,15 +24,38 @@ const Dashboard = () => {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      // Fetch dashboard stats and recent bookings safely
       const statsRes = await adminStatsAPI.getDashboardStats();
       const bookingsRes = await adminStatsAPI.getRecentBookings(5);
 
-      setStats(statsRes?.data || {});
-      setRecentBookings(bookingsRes?.data || []);
+      const statsData = statsRes.data || {};
+
+      setStats({
+        totalBookings: statsData.totalBookings || 0,
+        totalRevenue: statsData.totalRevenue || 0,
+        totalRoutes: statsData.totalRoutes || 0,
+        totalUsers: statsData.totalUsers || 0,
+      });
+
+      setRecentBookings(
+        (bookingsRes?.data?.data || bookingsRes?.data || []).map(
+          (b, index) => ({
+            id: b._id || `booking-${index}`, // guaranteed unique
+            customerName: b.user?.name || "N/A",
+            routeName: b.route ? `${b.route.from} → ${b.route.to}` : "N/A",
+            travelDate: b.travelDate || null,
+            amount: b.totalAmount || 0,
+            status: b.paymentStatus || "unknown",
+          }),
+        ),
+      );
     } catch (err) {
       console.error("Failed to load dashboard data:", err);
-      setStats({});
+      setStats({
+        totalBookings: 0,
+        totalRevenue: 0,
+        totalRoutes: 0,
+        totalUsers: 0,
+      });
       setRecentBookings([]);
       toast.error("Failed to load dashboard data");
     } finally {
@@ -49,18 +77,18 @@ const Dashboard = () => {
       key: "id",
       title: "Booking ID",
       render: (item) => (
-        <span className="font-mono text-sm">#{item.id?.slice(-8)}</span>
+        <span className="font-mono text-sm">#{item.id.slice(-8)}</span>
       ),
     },
     {
       key: "customer",
       title: "Customer",
-      render: (item) => <div>{item.customerName || "N/A"}</div>,
+      render: (item) => item.customerName,
     },
     {
       key: "route",
       title: "Route",
-      render: (item) => <div>{item.routeName || "N/A"}</div>,
+      render: (item) => item.routeName,
     },
     {
       key: "date",

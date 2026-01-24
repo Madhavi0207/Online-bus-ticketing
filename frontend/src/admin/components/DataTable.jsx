@@ -61,7 +61,7 @@ const DataTable = ({
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      onSelect?.(data.map((item) => item._id));
+      onSelect?.(data.map((item) => item.id));
     } else {
       onSelect?.([]);
     }
@@ -79,7 +79,11 @@ const DataTable = ({
 
   const renderCell = (item, column) => {
     if (column.render) return column.render(item, column);
-    const value = item[column.key];
+
+    let value = item[column.key];
+
+    // Default to safe values
+    if (value === null || value === undefined) value = "";
 
     if (column.type === "boolean") {
       return (
@@ -103,22 +107,28 @@ const DataTable = ({
         active: "bg-green-100 text-green-800",
         inactive: "bg-gray-100 text-gray-800",
       };
+      const displayValue = value?.toString() || "Unknown";
       return (
         <span
           className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
             statusColors[value] || statusColors.inactive
           }`}
         >
-          {value?.charAt(0).toUpperCase() + value?.slice(1)}
+          {displayValue.charAt(0).toUpperCase() + displayValue.slice(1)}
         </span>
       );
     }
 
-    if (column.type === "date") return new Date(value).toLocaleDateString();
-    if (column.type === "currency")
-      return `NPR ${parseFloat(value).toLocaleString()}`;
+    if (column.type === "date") {
+      return value ? new Date(value).toLocaleDateString() : "N/A";
+    }
 
-    return value || "-";
+    if (column.type === "currency") {
+      const num = parseFloat(value);
+      return isNaN(num) ? "NPR 0" : `NPR ${num.toLocaleString()}`;
+    }
+
+    return value.toString() || "-";
   };
 
   if (loading) {
@@ -273,13 +283,13 @@ const DataTable = ({
               </tr>
             ) : (
               data.map((item) => (
-                <tr key={item._id} className="hover:bg-gray-50">
+                <tr key={item.id} className="hover:bg-gray-50">
                   {selectable && (
                     <td className="px-6 py-4">
                       <input
                         type="checkbox"
-                        checked={selectedRows.includes(item._id)}
-                        onChange={() => handleSelectRow(item._id)}
+                        checked={selectedRows.includes(item.id)}
+                        onChange={() => handleSelectRow(item.id)}
                         className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                       />
                     </td>

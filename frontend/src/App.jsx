@@ -26,61 +26,76 @@ import ManageService from "./admin/pages/ManageService";
 import ManageUsers from "./admin/pages/ManageUsers";
 import SendTickets from "./admin/pages/SendTickets";
 
+// Error pages
+import NotFoundPage from "./pages/NotFoundPage";
+import ErrorBoundary from "./components/ErrorBoundary";
+
 function App() {
   return (
     <AuthProvider>
       <Toaster position="top-right" />
-      <Router>
-        <Routes>
-          {/* ================= USER LAYOUT ================= */}
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
+      <ErrorBoundary>
+        <Router>
+          <Routes>
+            {/* ================= USER LAYOUT ================= */}
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
 
+              <Route
+                path="/booking"
+                element={
+                  <ProtectedRoute>
+                    <BookingPage />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/my-bookings"
+                element={
+                  <ProtectedRoute>
+                    <MyBookingsPage />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route path="/routes" element={<RoutesPage />} />
+              <Route path="/routes/:id" element={<RouteDetails />} />
+              <Route path="/services" element={<ServicesPage />} />
+
+              {/* catch all unknown user routes */}
+              <Route path="*" element={<NotFoundPage />} />
+            </Route>
+
+            {/* ================= ADMIN LAYOUT ================= */}
             <Route
-              path="/booking"
+              path="/admin"
               element={
-                <ProtectedRoute>
-                  <BookingPage />
+                <ProtectedRoute adminOnly>
+                  <AdminLayout />
                 </ProtectedRoute>
               }
-            />
+            >
+              <Route index element={<Dashboard />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="bookings" element={<ManageBooking />} />
+              <Route path="routes" element={<ManageRoutes />} />
+              <Route path="services" element={<ManageService />} />
+              <Route path="users" element={<ManageUsers />} />
+              <Route path="analytics" element={<Analytics />} />
+              <Route path="tickets/send" element={<SendTickets />} />
 
-            <Route
-              path="/my-bookings"
-              element={
-                <ProtectedRoute>
-                  <MyBookingsPage />
-                </ProtectedRoute>
-              }
-            />
+              {/* catch all unknown admin routes i.e. starting from admin/ */}
+              <Route path="*" element={<NotFoundPage />} />
+            </Route>
 
-            <Route path="/routes" element={<RoutesPage />} />
-            <Route path="/routes/:id" element={<RouteDetails />} />
-            <Route path="/services" element={<ServicesPage />} />
-          </Route>
-
-          {/* ================= ADMIN LAYOUT ================= */}
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute adminOnly>
-                <AdminLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<Dashboard />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="bookings" element={<ManageBooking />} />
-            <Route path="routes" element={<ManageRoutes />} />
-            <Route path="services" element={<ManageService />} />
-            <Route path="users" element={<ManageUsers />} />
-            <Route path="analytics" element={<Analytics />} />
-            <Route path="tickets/send" element={<SendTickets />} />
-          </Route>
-        </Routes>
-      </Router>
+            {/* catch all the rest of the unknown routes */}
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </Router>
+      </ErrorBoundary>
     </AuthProvider>
   );
 }
