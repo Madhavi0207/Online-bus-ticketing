@@ -202,11 +202,11 @@ const MyBookingsPage = () => {
                       NPR {booking.totalAmount}
                     </div>
                     <div className="text-sm text-gray-500">
-                      {booking.paymentStatus === "completed" ? (
+                      {/* {booking.paymentStatus === "completed" ? (
                         <span className="text-green-600">Paid</span>
                       ) : (
                         <span className="text-yellow-600">Pending</span>
-                      )}
+                      )} */}
                     </div>
                   </div>
 
@@ -219,8 +219,8 @@ const MyBookingsPage = () => {
                             onClick={() => handleSendTicket(booking._id)}
                             className="btn-secondary flex items-center justify-center space-x-2"
                           >
-                            <Mail className="h-4 w-4" />
-                            <span>Send Ticket</span>
+                            {/* <Mail className="h-4 w-4" /> */}
+                            {/* <span>Send Ticket</span> */}
                           </button>
 
                           <button
@@ -234,8 +234,8 @@ const MyBookingsPage = () => {
                       )}
 
                     <button className="btn-primary flex items-center justify-center space-x-2">
-                      <Download className="h-4 w-4" />
-                      <span>Download PDF</span>
+                      {/* <Download className="h-4 w-4" /> */}
+                      {/* <span>Download PDF</span> */}
                     </button>
                   </div>
                 </div>
