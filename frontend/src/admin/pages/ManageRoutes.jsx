@@ -82,7 +82,7 @@ const ManageRoutes = () => {
         <h2 className="text-xl font-bold">Manage Routes</h2>
         <button
           onClick={() => setShowForm(true)}
-          className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700"
+          className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 bg-green-600"
         >
           Add New Route
         </button>

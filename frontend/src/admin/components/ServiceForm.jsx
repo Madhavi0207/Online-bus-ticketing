@@ -49,7 +49,11 @@ const ServiceForm = ({ service, onSubmit, onCancel }) => {
               key={i}
               type="button"
               onClick={() => setFormData((prev) => ({ ...prev, icon }))}
-              className={`p-3 text-2xl rounded-lg border ${formData.icon === icon ? "border-primary-600 bg-primary-50" : "border-gray-300 hover:border-gray-400"}`}
+              className={`p-3 text-2xl rounded-lg border ${
+                formData.icon === icon
+                  ? "border-primary-600 bg-primary-50"
+                  : "border-gray-300 hover:border-gray-400"
+              }`}
             >
               {icon}
             </button>
@@ -61,7 +65,7 @@ const ServiceForm = ({ service, onSubmit, onCancel }) => {
           value={formData.icon}
           onChange={handleChange}
           placeholder="Or type custom icon/emoji"
-          className="input-field w-full"
+          className="border border-gray-300 rounded-lg p-2 w-full"
         />
       </div>
 
@@ -77,7 +81,7 @@ const ServiceForm = ({ service, onSubmit, onCancel }) => {
           onChange={handleChange}
           placeholder="Service title"
           required
-          className="input-field w-full"
+          className="border border-gray-300 rounded-lg p-2 w-full"
         />
       </div>
 
@@ -93,7 +97,7 @@ const ServiceForm = ({ service, onSubmit, onCancel }) => {
           placeholder="Describe service features..."
           rows={3}
           required
-          className="input-field w-full"
+          className="border border-gray-300 rounded-lg p-2 w-full"
         />
       </div>
 
@@ -122,7 +126,7 @@ const ServiceForm = ({ service, onSubmit, onCancel }) => {
         </button>
         <button
           type="submit"
-          className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+          className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 bg-green-600"
         >
           {service ? "Update Service" : "Add Service"}
         </button>

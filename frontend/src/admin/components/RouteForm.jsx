@@ -99,7 +99,7 @@ const RouteForm = ({ route, onClose, onSubmit }) => {
         <div className="flex space-x-2">
           <button
             type="submit"
-            className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700"
+            className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 bg-green-600"
           >
             {route ? "Update" : "Create"}
           </button>

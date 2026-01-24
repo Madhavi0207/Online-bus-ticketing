@@ -30,9 +30,6 @@ const Sidebar = () => {
     { title: "Users", icon: Users, path: "/admin/users" },
     { title: "Services", icon: ListOrdered, path: "/admin/services" },
     { title: "Tickets", icon: Mail, path: "/admin/tickets/send" },
-    { title: "Analytics", icon: BarChart3, path: "/admin/analytics" },
-    { title: "Reports", icon: FileText, path: "/admin/reports" },
-    { title: "Settings", icon: Settings, path: "/admin/settings" },
   ];
 
   const handleLogout = () => {

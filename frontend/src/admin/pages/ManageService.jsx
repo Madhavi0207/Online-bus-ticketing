@@ -13,6 +13,7 @@ const ManageServices = () => {
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [dragIndex, setDragIndex] = useState(null);
+  const [isEdit, setIsEdit] = useState(false); // NEW: track if editing
 
   useEffect(() => {
     fetchServices();
@@ -32,11 +33,13 @@ const ManageServices = () => {
 
   const handleCreateService = () => {
     setSelectedService(null);
+    setIsEdit(false);
     setShowModal(true);
   };
 
   const handleEditService = (service) => {
     setSelectedService(service);
+    setIsEdit(true);
     setShowModal(true);
   };
 
@@ -58,12 +61,12 @@ const ManageServices = () => {
 
   const handleSaveService = async (serviceData) => {
     try {
-      if (selectedService) {
+      if (isEdit && selectedService) {
         await adminServicesAPI.updateService(selectedService._id, serviceData);
         toast.success("Service updated successfully");
       } else {
         await adminServicesAPI.createService(serviceData);
-        toast.success("Service added successfully");
+        toast.success("Service created successfully");
       }
       setShowModal(false);
       fetchServices();
@@ -72,35 +75,30 @@ const ManageServices = () => {
     }
   };
 
-  const handleDragStart = (index) => setDragIndex(index);
-  const handleDragOver = (e) => e.preventDefault();
-  const handleDrop = async (dropIndex) => {
-    if (dragIndex === null || dragIndex === dropIndex) return;
-    const newServices = [...services];
-    const [dragged] = newServices.splice(dragIndex, 1);
-    newServices.splice(dropIndex, 0, dragged);
-    const updatedServices = newServices.map((s, i) => ({ ...s, order: i }));
-    setServices(updatedServices);
-    try {
-      await adminServicesAPI.updateServiceOrder(updatedServices);
-      toast.success("Services order updated");
-    } catch (err) {
-      toast.error("Failed to update order");
-      fetchServices();
-    }
-    setDragIndex(null);
-  };
-
   const columns = [
     {
       key: "order",
       title: "Order",
-      render: (item, _, index) => (
+      render: (item, column, index) => (
         <div
           draggable
-          onDragStart={() => handleDragStart(index)}
-          onDragOver={handleDragOver}
-          onDrop={() => handleDrop(index)}
+          onDragStart={() => setDragIndex(index)}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={() => {
+            if (dragIndex === null || dragIndex === index) return;
+            const newServices = [...services];
+            const [dragged] = newServices.splice(dragIndex, 1);
+            newServices.splice(index, 0, dragged);
+            const updatedServices = newServices.map((s, i) => ({
+              ...s,
+              order: i,
+            }));
+            setServices(updatedServices);
+            adminServicesAPI
+              .updateServiceOrder(updatedServices)
+              .catch(() => fetchServices());
+            setDragIndex(null);
+          }}
           className="flex items-center justify-center cursor-move p-2"
         >
           <GripVertical className="h-4 w-4 text-gray-400" />
@@ -130,7 +128,11 @@ const ManageServices = () => {
       title: "Status",
       render: (item) => (
         <span
-          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${item.isActive ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}`}
+          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+            item.isActive
+              ? "bg-green-100 text-green-800"
+              : "bg-gray-100 text-gray-800"
+          }`}
         >
           {item.isActive ? "Active" : "Inactive"}
         </span>
@@ -145,13 +147,13 @@ const ManageServices = () => {
             onClick={() => handleEditService(item)}
             className="text-blue-600 hover:text-blue-900"
           >
-            Edit
+            <Edit className="h-4 w-4" />
           </button>
           <button
             onClick={() => handleDeleteService(item)}
             className="text-red-600 hover:text-red-900"
           >
-            Delete
+            <Trash2 className="h-4 w-4" />
           </button>
         </div>
       ),
@@ -160,7 +162,6 @@ const ManageServices = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Manage Services</h1>
@@ -177,25 +178,23 @@ const ManageServices = () => {
         </button>
       </div>
 
-      {/* Table */}
       <DataTable
         columns={columns}
         data={services}
         loading={loading}
         pagination={false}
-        emptyMessage="No services found. Add your first service!"
       />
 
-      {/* Modal */}
+      {/* Modal for Add/Edit */}
       <Modal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
-        title={selectedService ? "Edit Service" : "Add New Service"}
+        title={isEdit ? "Edit Service" : "Add New Service"}
         size="md"
       >
         <ServiceForm
-          key={selectedService?._id || "new"}
           service={selectedService}
+          isEdit={isEdit}
           onSubmit={handleSaveService}
           onCancel={() => setShowModal(false)}
         />
