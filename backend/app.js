@@ -39,15 +39,14 @@ app.use((err, req, res, next) => {
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/routes", require("./routes/routeRoutes"));
 app.use("/api/services", require("./routes/serviceRoutes"));
-app.use("/api/bookings", require("./routes/bookingRoutes"));
+app.use("/api/bookings", require("./routes/users/bookingRoutes"));
 app.use("/api/buses", require("./routes/busesRoutes"));
 
 // Admin routes
-app.use("/api/admin/auth", require("./routes/auth.admin.routes"));
-app.use("/api/admin", require("./routes/admin.routes"));
-// Admin service routes
+app.use("/api/admin/auth", require("./routes/admin/auth.admin.routes"));
+app.use("/api/admin", require("./routes/admin/admin.routes"));
 app.use("/api/admin/services", require("./routes/serviceRoutes"));
-// Default route
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

@@ -42,7 +42,7 @@ const ManageBookings = () => {
       const response = await adminBookingsAPI.getAllBookings(
         currentPage,
         10,
-        filters
+        filters,
       );
       setBookings(response.data);
       setTotalItems(response.total || response.data.length);
@@ -62,7 +62,7 @@ const ManageBookings = () => {
         total: data.length,
         pending: data.filter((b) => b.paymentStatus === "pending").length,
         confirmed: data.filter(
-          (b) => !b.isCancelled && b.paymentStatus === "completed"
+          (b) => !b.isCancelled && b.paymentStatus === "completed",
         ).length,
         cancelled: data.filter((b) => b.isCancelled).length,
       });
@@ -211,15 +211,15 @@ const ManageBookings = () => {
               item.paymentStatus === "completed"
                 ? "bg-green-100 text-green-800"
                 : item.paymentStatus === "pending"
-                ? "bg-yellow-100 text-yellow-800"
-                : "bg-red-100 text-red-800"
+                  ? "bg-yellow-100 text-yellow-800"
+                  : "bg-red-100 text-red-800"
             }`}
           >
             {item.paymentStatus === "completed"
               ? "Confirmed"
               : item.paymentStatus === "pending"
-              ? "Pending"
-              : "Failed"}
+                ? "Pending"
+                : "Failed"}
           </span>
         );
       },

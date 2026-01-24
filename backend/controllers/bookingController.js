@@ -80,21 +80,6 @@ const createBooking = async (req, res) => {
   }
 };
 
-// ===== Get All Bookings (Admin) =====
-const getAllBookings = async (req, res) => {
-  try {
-    const bookings = await Booking.find()
-      .populate("user", "name email phone")
-      .populate("route")
-      .populate("bus")
-      .sort({ createdAt: -1 });
-    res.json(bookings);
-  } catch (error) {
-    console.error("Get All Bookings Error:", error);
-    res.status(500).json({ error: error.message });
-  }
-};
-
 // ===== Get User Bookings =====
 const getUserBookings = async (req, res) => {
   try {
@@ -158,10 +143,8 @@ const sendTicket = async (req, res) => {
   }
 };
 
-// ===== Export all functions =====
 module.exports = {
   createBooking,
-  getAllBookings,
   getUserBookings,
   cancelBooking,
   sendTicket,

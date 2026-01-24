@@ -38,11 +38,23 @@ const ManageUsers = () => {
       const response = searchQuery
         ? await adminUsersAPI.searchUsers(searchQuery)
         : await adminUsersAPI.getAllUsers(currentPage, 10);
-      setUsers(response.data);
-      setTotalItems(response.total || response.data.length);
+
+      // 🔐 Normalize response safely
+      const usersArray = Array.isArray(response.data)
+        ? response.data
+        : Array.isArray(response.data?.data)
+          ? response.data.data
+          : [];
+
+      const total = response.data?.total ?? response.total ?? usersArray.length;
+
+      setUsers(usersArray);
+      setTotalItems(total);
     } catch (error) {
       toast.error("Failed to load users");
-      console.error(error);
+      console.error("Fetch Users Error:", error);
+      setUsers([]);
+      setTotalItems(0);
     } finally {
       setLoading(false);
     }
@@ -57,7 +69,7 @@ const ManageUsers = () => {
     try {
       await adminUsersAPI.toggleAdminStatus(selectedUser._id);
       toast.success(
-        `User ${selectedUser.isAdmin ? "removed from" : "added to"} admin`
+        `User ${selectedUser.isAdmin ? "removed from" : "added to"} admin`,
       );
       fetchUsers();
       setShowAdminModal(false);

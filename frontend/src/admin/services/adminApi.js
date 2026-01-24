@@ -1,4 +1,4 @@
-import api from "../../services/api";
+import api from "../../services/api.js";
 
 // ===== Admin Dashboard Statistics =====
 export const adminStatsAPI = {
@@ -21,15 +21,12 @@ export const adminUsersAPI = {
 
 // ===== Routes Management =====
 export const adminRoutesAPI = {
-  getAllRoutes: (page = 1, limit = 10, filters = {}) =>
-    api.get("/admin/routes", { params: { page, limit, ...filters } }),
-  getRouteById: (id) => api.get(`/admin/routes/${id}`),
-  createRoute: (routeData) => api.post(`/admin/routes`, routeData),
-  updateRoute: (id, routeData) => api.put(`/admin/routes/${id}`, routeData),
-  deleteRoute: (id) => api.delete(`/admin/routes/${id}`),
-  toggleRouteStatus: (id) => api.put(`/admin/routes/${id}/toggle-status`),
+  getAllRoutes: () => api.get("/admin/routes"), // GET all routes
+  getRouteById: (id) => api.get(`/admin/routes/${id}`), // GET single route
+  createRoute: (routeData) => api.post("/admin/routes", routeData), // POST new
+  updateRoute: (id, routeData) => api.put(`/admin/routes/${id}`, routeData), // PUT update
+  deleteRoute: (id) => api.delete(`/admin/routes/${id}`), // DELETE route
 };
-
 // ===== Bookings Management =====
 export const adminBookingsAPI = {
   getAllBookings: (page = 1, limit = 10, filters = {}) =>

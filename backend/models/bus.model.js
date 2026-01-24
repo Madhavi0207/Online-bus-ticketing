@@ -19,41 +19,40 @@ const seatSchema = new mongoose.Schema({
   },
 });
 
-const busSchema = new mongoose.Schema({
-  route: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Route",
-    required: true,
+const busSchema = new mongoose.Schema(
+  {
+    route: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Route",
+      required: true,
+    },
+    busNumber: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    totalSeats: {
+      type: Number,
+      default: 40,
+    },
+    availableSeats: {
+      type: Number,
+      default: 40,
+    },
+    seats: [seatSchema], // Added: Array of seat subdocuments
+    departureTime: {
+      type: Date,
+      required: true,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
-  busNumber: {
-    type: String,
-    required: true,
-  },
-  price: {
-    type: Number,
-    required: true,
-  },
-  totalSeats: {
-    type: Number,
-    default: 40,
-  },
-  availableSeats: {
-    type: Number,
-    default: 40,
-  },
-  seats: [seatSchema], // Added: Array of seat subdocuments
-  departureTime: {
-    type: Date,
-    required: true,
-  },
-  isActive: {
-    type: Boolean,
-    default: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  { timestamps: true },
+);
 
 module.exports = mongoose.model("Bus", busSchema);
