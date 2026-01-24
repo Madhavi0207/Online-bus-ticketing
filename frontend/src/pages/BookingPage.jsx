@@ -132,9 +132,8 @@ const BookingPage = () => {
   if (loading || !selectedBus) return <LoadingSpinner />;
 
   const bookedSeats =
-    selectedBus.seats
-      ?.filter((seat) => seat.isBooked)
-      .map((seat) => seat.seatNumber) || [];
+    selectedBus.seats?.filter((seat) => seat.isBooked).map((seat) => seat) ||
+    [];
 
   return (
     <div className="section-container max-w-4xl mx-auto px-4 py-8">

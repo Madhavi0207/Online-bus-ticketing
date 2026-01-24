@@ -27,12 +27,12 @@ router.post("/khalti/initiate", async (req, res) => {
         phone: booking.user.phone || "",
       },
       amount_breakdown: booking.seats.map((seat) => ({
-        label: `Seat ${seat.seatNumber}`,
+        label: `Seat ${seat}`,
         amount: booking.route.price * 100,
       })),
       product_details: booking.seats.map((seat) => ({
-        identity: seat.seatNumber,
-        name: seat.passengerName,
+        identity: seat,
+        // name: seat.passengerName,
         quantity: 1,
         unit_price: booking.route.price * 100,
         total_price: booking.route.price * 100,

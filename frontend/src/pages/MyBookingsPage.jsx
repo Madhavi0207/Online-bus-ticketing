@@ -155,26 +155,6 @@ const MyBookingsPage = () => {
                     </div>
                   </div>
 
-                  {/* Passenger Details */}
-                  {/* <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                    <h4 className="font-semibold mb-2">Passenger Details</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                      {booking.selectedSeats.map((seat, index) => (
-                        <div key={index} className="bg-white rounded p-3">
-                          <div className="font-medium">
-                            Seat {seat.seatNumber}
-                          </div>
-                          <div className="text-sm text-gray-600">
-                            {seat.passengerName}
-                          </div>
-                          <div className="text-xs text-gray-500">
-                            Age: {seat.passengerAge}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div> */}
-
                   {/* Booking Meta */}
                   <div className="flex flex-wrap gap-4 text-sm">
                     <div>

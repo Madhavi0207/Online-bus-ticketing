@@ -5,7 +5,7 @@ const RouteForm = ({ route, onClose, onSubmit }) => {
     from: "",
     to: "",
     description: "",
-    duration: "",
+    duration: 0,
     isActive: true,
   });
 
@@ -69,9 +69,11 @@ const RouteForm = ({ route, onClose, onSubmit }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Duration</label>
+          <label className="block text-sm font-medium mb-1">
+            Duration (hours)
+          </label>
           <input
-            type="text"
+            type="number"
             name="duration"
             value={formData.duration}
             onChange={handleChange}

@@ -44,8 +44,8 @@ const ManageBookings = () => {
         10,
         filters,
       );
-      setBookings(response.data);
-      setTotalItems(response.total || response.data.length);
+      setBookings(response.data.data || []);
+      setTotalItems(response.data.total || response.data.data.length);
     } catch (error) {
       toast.error("Failed to load bookings");
       console.error(error);
@@ -57,7 +57,7 @@ const ManageBookings = () => {
   const fetchStats = async () => {
     try {
       const response = await adminBookingsAPI.getAllBookings(1, 1000);
-      const data = response.data;
+      const data = response.data.data || [];
       setStats({
         total: data.length,
         pending: data.filter((b) => b.paymentStatus === "pending").length,
@@ -178,9 +178,9 @@ const ManageBookings = () => {
       title: "Seats",
       render: (item) => (
         <div className="flex flex-wrap gap-1">
-          {item.seats.map((seat, i) => (
+          {item.selectedSeats.map((seat, i) => (
             <span key={i} className="px-2 py-1 bg-gray-100 rounded text-xs">
-              {seat.seatNumber}
+              {seat}
             </span>
           ))}
         </div>
@@ -453,20 +453,12 @@ const ManageBookings = () => {
             <div className="border-t pt-4">
               <h3 className="font-medium mb-3">Passenger Details</h3>
               <div className="space-y-3">
-                {selectedBooking.seats.map((seat, index) => (
+                {selectedBooking?.selectedSeats?.map((seat, index) => (
                   <div
                     key={index}
                     className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
                   >
-                    <div>
-                      <div className="font-medium">Seat {seat.seatNumber}</div>
-                      <div className="text-sm text-gray-600">
-                        {seat.passengerName}
-                      </div>
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      Age: {seat.passengerAge}
-                    </div>
+                    <div className="font-medium">Seat {seat}</div>
                   </div>
                 ))}
               </div>

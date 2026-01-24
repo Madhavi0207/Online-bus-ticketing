@@ -72,7 +72,7 @@ const ManageRoutes = () => {
     { key: "from", title: "From" },
     { key: "to", title: "To" },
     { key: "description", title: "Description" },
-    { key: "duration", title: "Duration" },
+    { key: "duration", title: "Duration (hours)" },
     { key: "isActive", title: "Active", type: "boolean" },
   ];
 
